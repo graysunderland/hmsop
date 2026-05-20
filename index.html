@@ -4,15 +4,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>HMSOP — Help me sweep original punks.</title>
-<meta name="description" content="5,760 patrons help sweep V1 CryptoPunks up to the V2 floor. Every ~4 ETH the pool sweeps another V1 from the floor. 9 Alien pixels — matching the 9 V1 Alien punks — chosen at random." />
+<meta name="description" content="5,760 patrons help sweep V1 CryptoPunks up to the V2 floor. Every ~4 ETH the pool sweeps another V1 from the floor. 9 Alien pixels — matching the 9 V1 Alien punks — visible only to Alien-holders." />
 <meta property="og:title" content="HMSOP — Help me sweep original punks." />
-<meta property="og:description" content="5,760 patrons. We sweep V1s continuously up to the V2 floor. 9 Alien pixels — matching the 9 V1 Aliens — chosen at random." />
+<meta property="og:description" content="5,760 patrons. We sweep V1s continuously up to the V2 floor. 9 Alien pixels — visible only to holders." />
 <meta property="og:image" content="/og.png" />
 <meta property="og:url" content="https://hmsop.xyz" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="HMSOP — Help me sweep original punks." />
-<meta name="twitter:description" content="5,760 patrons. We sweep V1s continuously up to the V2 floor. 9 Alien pixels chosen at random." />
+<meta name="twitter:description" content="5,760 patrons. We sweep V1s continuously up to the V2 floor. 9 Alien pixels, visible only to holders." />
 <meta name="twitter:image" content="/og.png" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -297,6 +297,13 @@
     color: var(--ink-faint);
   }
   .punk-card svg { width: 70%; height: 70%; }
+  .punk-card img {
+    width: 100%; height: 100%; display: block;
+    /* Preserve pixel art crispness */
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
   .punk-meta {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -361,6 +368,58 @@
   .stage-lbl .num { color: var(--ink); }
   @media (max-width: 540px) {
     .stages-grid { grid-template-columns: 1fr; gap: 28px; }
+  }
+
+  /* ============================================ TWO VIEWS ============================================ */
+  .views { margin: var(--space-xxl) 0; }
+  .views-head { margin-bottom: var(--space-md); max-width: 36ch; }
+  .views-eyebrow {
+    font-size: 10.5px; color: var(--ink-mid);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    font-weight: 500; font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 14px;
+  }
+  .views-title {
+    font-size: clamp(22px, 2.8vw, 30px);
+    font-weight: 500; letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+  .views-title .lav-text { color: var(--lav); }
+  .views-sub {
+    font-size: clamp(14px, 1.4vw, 16px);
+    color: var(--ink-mid); line-height: 1.55;
+    max-width: 48ch;
+  }
+  .views-sub strong { color: var(--ink); font-weight: 500; }
+  .views-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(14px, 2.5vw, 24px);
+  }
+  .view-tile { display: flex; flex-direction: column; gap: 14px; }
+  .view-art { aspect-ratio: 1; background: var(--bg); }
+  .view-art svg { width: 100%; height: 100%; display: block; }
+  .view-lbl {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .view-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-weight: 600; letter-spacing: 0.08em;
+    padding: 3px 8px;
+    background: var(--ink); color: var(--bg);
+    text-transform: uppercase;
+  }
+  .view-tag.holder {
+    background: var(--ink); color: var(--alien);
+  }
+  .view-desc {
+    font-size: 10.5px; color: var(--ink-mid);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    font-weight: 500; font-family: 'JetBrains Mono', monospace;
+  }
+  @media (max-width: 540px) {
+    .views-grid { grid-template-columns: 1fr; gap: 24px; }
   }
 
   /* ============================================ STATEMENTS ============================================ */
@@ -590,7 +649,7 @@
   <!-- STATS — V1s swept is now front and centre -->
   <div class="stats reveal">
     <div class="stat">
-      <div class="stat-num accent" id="raised">4.852</div>
+      <div class="stat-num" id="raised">4.852</div>
       <div class="stat-lbl">ETH raised / 33</div>
     </div>
     <div class="stat">
@@ -598,11 +657,11 @@
       <div class="stat-lbl">Mints / 5,760</div>
     </div>
     <div class="stat">
-      <div class="stat-num accent" id="v1s-swept">1</div>
+      <div class="stat-num" id="v1s-swept">1</div>
       <div class="stat-lbl">V1s swept</div>
     </div>
     <div class="stat">
-      <div class="stat-num bug-stat" id="aliens-stat"><span class="bug-dot"></span><span id="alien-count">1</span></div>
+      <div class="stat-num" id="alien-count">1</div>
       <div class="stat-lbl">Aliens claimed / 9</div>
     </div>
   </div>
@@ -664,6 +723,31 @@
       </div>
     </div>
   </section>
+
+  <!-- TWO VIEWS — public vs alien-holder -->
+  <section class="views">
+    <div class="views-head">
+      <div class="views-eyebrow">— Two views</div>
+      <h2 class="views-title">Aliens are <span class="lav-text">invisible</span> to everyone except&nbsp;holders.</h2>
+      <p class="views-sub">The canvas the public sees is pure lavender. <strong>If you mint an Alien</strong>, your token reveals every Alien minted before yours — cyan, a view that only Alien-holders' tokens&nbsp;possess.</p>
+    </div>
+    <div class="views-grid">
+      <div class="view-tile">
+        <div class="view-art"><svg id="view-public" viewBox="0 0 240 240" shape-rendering="crispEdges"></svg></div>
+        <div class="view-lbl">
+          <span class="view-tag">PUBLIC</span>
+          <span class="view-desc">What everyone&nbsp;sees</span>
+        </div>
+      </div>
+      <div class="view-tile">
+        <div class="view-art"><svg id="view-holder" viewBox="0 0 240 240" shape-rendering="crispEdges"></svg></div>
+        <div class="view-lbl">
+          <span class="view-tag holder">ALIEN&nbsp;HOLDER</span>
+          <span class="view-desc">9 cyan pixels, the&nbsp;collective</span>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- BUG SECTION -->
@@ -676,7 +760,7 @@
     </p>
     <div class="bug-rule">
       <span class="arrow">→</span>
-      <span>Every mint has a <strong>1-in-640 chance</strong> of placing an <strong>Alien&nbsp;pixel</strong> — pale cyan, like the <strong>9 Alien punks</strong> in the V1&nbsp;collection. ~9 will exist at full&nbsp;mint. You can't choose to mint one. The bug chooses&nbsp;you.</span>
+      <span>Every mint has a <strong>1-in-640 chance</strong> of placing an <strong>Alien&nbsp;pixel</strong> — pale cyan, like the <strong>9 Alien punks</strong> in the V1&nbsp;collection. ~9 will exist at full&nbsp;mint. <strong>Visible only on Alien-holders' tokens.</strong> You can't choose to mint one. The bug chooses&nbsp;you.</span>
     </div>
   </div>
 </section>
@@ -706,13 +790,13 @@
     <div class="statement">
       <div class="statement-num">04 — The Aliens</div>
       <div class="statement-text"><span class="bug-square"></span> pixels are rare. 9 in 5,760.</div>
-      <div class="statement-sub">Each mint has a 1-in-640 chance of becoming an Alien — rendered in <strong>cyan</strong>, the same shade as the background of the <strong>9 Alien CryptoPunks</strong> in the original collection. ~9 will exist at full mint. Aliens are tagged in the patron ticker as <code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;">[ALIEN]</code>. You can't mint one on purpose. The bug chooses&nbsp;you.</div>
+      <div class="statement-sub">Each mint has a 1-in-640 chance of becoming an Alien — rendered in <strong>cyan</strong>, the same shade as the background of the <strong>9 Alien CryptoPunks</strong> in the original collection. ~9 will exist at full mint. Aliens are tagged in the patron ticker as <code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;">[ALIEN]</code>. <strong>Only Alien-holders' tokens reveal Aliens.</strong> Every Alien minted before yours appears on your token in cyan. Non-Alien tokens show pure lavender. You can't choose to mint one. The bug chooses&nbsp;you.</div>
     </div>
 
     <div class="statement">
       <div class="statement-num">05 — Your NFT</div>
       <div class="statement-text">Your token is the canvas at the block you minted.</div>
-      <div class="statement-sub">A snapshot. With your pixel marked. Patron #1's piece shows a near-empty canvas. Patron #5,760's piece shows the finished portrait. <strong>5,760 unique moments of the same artwork's becoming.</strong> All on-chain SVG — no IPFS, no external dependency. The token also stores your @handle and whether you got an&nbsp;Alien.</div>
+      <div class="statement-sub">A snapshot. With your pixel marked. Patron #1's piece shows a near-empty canvas. Patron #5,760's piece shows the finished portrait. <strong>5,760 unique moments of the same artwork's becoming.</strong> All on-chain SVG — no IPFS, no external dependency. The token stores your @handle and whether you got an Alien. <strong>If you did, your token shows every Alien minted before yours in&nbsp;cyan.</strong> Other tokens show pure&nbsp;lavender.</div>
     </div>
 
     <div class="statement">
@@ -771,7 +855,7 @@
         <div class="row divider"><span>Status</span><span id="confirm-status">Waiting for wallet…</span></div>
       </div>
       <p class="modal-fine">
-        Once the transaction is mined, your pixel is placed and your NFT mints automatically. If you get an Alien — congratulations. The chance was 1 in 640.
+        Once the transaction is mined, your pixel is placed and your NFT mints automatically. If you get an Alien — congratulations. Your token unlocks the holder view. The chance was 1 in&nbsp;640.
       </p>
     </div>
   </div>
@@ -864,15 +948,17 @@ function buildStateAt(sequence, n) {
 // =================================================================
 const CELL = 240 / GRID;
 
-function renderState({ counts, aliens }) {
+function renderState({ counts, aliens }, showAliens = false) {
   let svg = '';
   for (let i = 0; i < TOTAL; i++) {
     if (counts[i] === 0) continue;
     const x = (i % GRID) * CELL;
     const y = Math.floor(i / GRID) * CELL;
-    if (aliens[i]) {
+    if (aliens[i] && showAliens) {
       svg += `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${ALIEN_COLOR}"/>`;
     } else {
+      // Public (non-holder) view: alien cells render as their normal lavender
+      // shade — invisible from the alien rare trait. Only alien-holders see cyan.
       svg += `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${SHADES[counts[i] - 1]}"/>`;
     }
   }
@@ -942,6 +1028,13 @@ document.getElementById('stage-2').innerHTML = renderState(buildStateAt(HERO_SEQ
 document.getElementById('stage-3').innerHTML = renderState(buildStateAt(HERO_SEQ, 5760));
 
 // =================================================================
+// TWO VIEWS — public vs alien-holder, same canvas state
+// =================================================================
+const viewState = buildStateAt(HERO_SEQ, 5760);
+document.getElementById('view-public').innerHTML = renderState(viewState, false);
+document.getElementById('view-holder').innerHTML = renderState(viewState, true);
+
+// =================================================================
 // CURRENT REAL STATE (demo — wired up via contract reads in production)
 // =================================================================
 const REAL_MINTS = 847;
@@ -968,8 +1061,10 @@ setTimeout(() => {
 // For this static landing, we show one example sweep + placeholders.
 // =================================================================
 const SWEPT_V1S = [
-  // Example: first V1 swept
-  { id: 2891, priceEth: 4.18, timestamp: '2d ago' },
+  // First V1 swept — friend's punk. In production this populates from
+  // V1Acquired contract events. The imageUrl will come from the V1
+  // wrapper's tokenURI metadata. TODO: update id when real punk is swept.
+  { id: 2891, priceEth: 4.18, timestamp: '2d ago', imageUrl: '/kenny.png' },
 ];
 const SWEPT_TARGET_DISPLAY = 8;  // visual placeholder count
 
@@ -977,15 +1072,14 @@ function renderSweptGallery() {
   const grid = document.getElementById('swept-grid');
   let html = '';
 
-  // Real swept V1s
+  // Real swept V1s — use image if available, otherwise procedural portrait
   for (const v of SWEPT_V1S) {
-    // Tiny abstract pixel-portrait placeholder (the real art renders
-    // from V1 wrapper metadata in production). We seed it from the
-    // V1 ID so it's stable per punk.
-    const portrait = generatePortrait(v.id);
+    const visual = v.imageUrl
+      ? `<img src="${v.imageUrl}" alt="V1 CryptoPunk #${v.id}" loading="lazy" />`
+      : generatePortrait(v.id);
     html += `
       <div class="punk-card">
-        ${portrait}
+        ${visual}
         <div class="punk-meta">
           <span class="id">V1 #${v.id}</span>
           <span class="price">${v.priceEth} ETH</span>

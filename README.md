@@ -26,6 +26,7 @@ vercel --prod
 - `index.html` — landing page, self-contained
 - `favicon.svg` — favicon (solid V1 lavender pixel)
 - `og.png` — 1200×630 share card
+- `kenny.png` — placeholder image of the first swept V1 (replace with on-chain V1 metadata in production)
 - `vercel.json` — config
 
 ## Update before going live
