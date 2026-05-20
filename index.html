@@ -26,8 +26,14 @@
     --ink-faint: #c8c5be;
     --lav: #a69afe;
     --line: #ece9e2;
-    --bug-bg: #fff5d6;
-    --bug-ink: #4a3d1a;
+
+    /* checks.art-grade spacing scale */
+    --space-xs: clamp(12px, 1.5vh, 18px);
+    --space-sm: clamp(20px, 3vh, 32px);
+    --space-md: clamp(40px, 6vh, 64px);
+    --space-lg: clamp(80px, 12vh, 128px);
+    --space-xl: clamp(120px, 18vh, 200px);
+    --space-xxl: clamp(160px, 24vh, 280px);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -82,64 +88,116 @@
     padding: 2px 5px; margin-left: 6px; letter-spacing: 0.06em;
     text-transform: uppercase; vertical-align: 1px;
   }
+  .ticker-track .time {
+    color: var(--ink-faint); font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; margin-left: 6px;
+  }
   @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
   /* ============================================ PAGE ============================================ */
   .page {
     max-width: 760px; margin: 0 auto;
-    padding: clamp(56px, 9vh, 96px) clamp(20px, 4vw, 32px);
+    padding: 0 clamp(20px, 4vw, 32px);
   }
+  .page-top { padding-top: var(--space-xl); }
 
   /* ============================================ HERO ============================================ */
   .hero {
-    margin-bottom: clamp(96px, 14vh, 160px);
+    margin-bottom: var(--space-xxl);
     display: flex; flex-direction: column; align-items: center;
   }
   .hero-art {
-    width: clamp(220px, 38vw, 320px);
+    width: clamp(240px, 40vw, 340px);
     aspect-ratio: 1; background: var(--bg);
+    margin-bottom: 28px;
   }
   .hero-art svg { width: 100%; height: 100%; display: block; }
   .hero-caption {
-    margin-top: 22px; display: flex; gap: 24px;
+    display: flex; gap: 24px;
     font-size: 10.5px; color: var(--ink-mid);
     letter-spacing: 0.08em; text-transform: uppercase;
     font-weight: 500; font-family: 'JetBrains Mono', monospace;
     flex-wrap: wrap; justify-content: center;
+    margin-bottom: 14px;
   }
   .hero-caption .dot { color: var(--ink-faint); }
   .hero-caption .lav-text { color: var(--lav); }
   .hero-caption .bug-text { color: var(--ink); }
   .hero-caption .bug-text::before {
-    content: '■'; margin-right: 5px; vertical-align: -1px;
-    font-size: 9px;
+    content: '■'; margin-right: 5px; vertical-align: -1px; font-size: 9px;
+  }
+  /* FOMO line under the caption */
+  .hero-fomo {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink); letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 8px;
+    opacity: 0; animation: fadein 0.6s ease-out 1.8s forwards;
+  }
+  .hero-fomo .live-dot {
+    width: 6px; height: 6px; background: var(--lav);
+    border-radius: 50%; animation: pulse 1.6s ease-in-out infinite;
+  }
+  .hero-fomo .last { color: var(--ink-mid); }
+  @keyframes fadein { to { opacity: 1; } }
+
+  /* Pixel build-in animation */
+  .hero-art svg rect.pixel-anim {
+    opacity: 0;
+    animation: pop 0.4s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes pop {
+    0% { opacity: 0; transform: scale(0.6); transform-origin: center; }
+    60% { opacity: 1; transform: scale(1.15); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  /* Subtle continuous breathing for new arriving pixels */
+  .hero-art svg rect.pixel-new {
+    animation: pop 0.5s cubic-bezier(.2,.7,.2,1);
   }
 
   /* ============================================ HEADLINE ============================================ */
+  /* CRITICAL FIX: the lavender highlight is now a positioned pseudo-element
+     behind the text — so it can't clip into adjacent lines. */
   .headline {
     font-size: clamp(34px, 5.6vw, 64px);
     font-weight: 500; letter-spacing: -0.04em;
-    line-height: 1.0; margin-bottom: clamp(40px, 6vh, 56px);
+    line-height: 1.08;
+    margin-bottom: var(--space-md);
     max-width: 14ch; text-wrap: balance;
   }
   .headline .original {
     font-weight: 700; font-style: normal;
-    background: var(--lav); padding: 0.04em 0.18em 0.08em;
-    margin: 0 -0.05em;
-    box-decoration-break: clone; -webkit-box-decoration-break: clone;
-    color: var(--ink); white-space: nowrap;
+    color: var(--ink);
+    position: relative;
+    white-space: nowrap;
+    display: inline-block;
+    z-index: 1;
   }
+  /* The highlight sits as a pseudo-element behind, sized to the word's
+     x-height region only, so it never reaches into the previous line. */
+  .headline .original::before {
+    content: '';
+    position: absolute;
+    background: var(--lav);
+    left: -0.05em;
+    right: -0.05em;
+    top: 0.12em;
+    bottom: 0.14em;
+    z-index: -1;
+  }
+
   .lede {
     font-size: clamp(18px, 2vw, 22px);
-    font-weight: 400; line-height: 1.42; letter-spacing: -0.015em;
-    margin-bottom: clamp(48px, 7vh, 72px); max-width: 38ch;
+    font-weight: 400; line-height: 1.45; letter-spacing: -0.015em;
+    margin-bottom: var(--space-lg);
+    max-width: 38ch;
   }
   .lede .faint { color: var(--ink-mid); }
 
   /* ============================================ STATS ============================================ */
   .stats {
     display: flex; gap: clamp(28px, 5vw, 56px);
-    margin-bottom: clamp(40px, 6vh, 56px);
+    margin-bottom: var(--space-md);
     flex-wrap: wrap;
   }
   .stat { display: flex; flex-direction: column; gap: 8px; }
@@ -149,9 +207,14 @@
     line-height: 1; font-variant-numeric: tabular-nums;
   }
   .stat-num.accent { color: var(--lav); }
-  .stat-num.bug-stat {
-    display: flex; align-items: baseline; gap: 8px;
+  .stat-num.flash {
+    animation: stat-flash 0.8s cubic-bezier(.2,.7,.2,1);
   }
+  @keyframes stat-flash {
+    0%   { background: rgba(166,154,254,0.3); }
+    100% { background: transparent; }
+  }
+  .stat-num.bug-stat { display: flex; align-items: baseline; gap: 8px; }
   .stat-num.bug-stat .bug-dot {
     display: inline-block; width: 14px; height: 14px;
     background: var(--ink); flex-shrink: 0;
@@ -163,14 +226,14 @@
   }
 
   /* ============================================ PROGRESS ============================================ */
-  .progress { margin-bottom: clamp(40px, 6vh, 64px); }
+  .progress { margin-bottom: var(--space-md); }
   .progress-bar {
     height: 4px; background: var(--line);
     position: relative; overflow: hidden;
   }
   .progress-fill {
     position: absolute; inset: 0; background: var(--lav);
-    width: 0%; transition: width 1.6s cubic-bezier(.2,.7,.2,1);
+    width: 0%; transition: width 2s cubic-bezier(.2,.7,.2,1);
   }
   .progress-meta {
     margin-top: 10px; display: flex; justify-content: space-between;
@@ -180,7 +243,7 @@
   .progress-meta .lav-text { color: var(--lav); }
 
   /* ============================================ CTA ============================================ */
-  .cta-block { margin-bottom: clamp(60px, 9vh, 96px); }
+  .cta-block { margin-bottom: var(--space-lg); }
   .cta {
     display: flex; align-items: center; justify-content: space-between;
     width: 100%; background: var(--lav); color: var(--ink);
@@ -194,7 +257,6 @@
   .cta-price {
     font-size: clamp(13px, 1.4vw, 15px); font-weight: 500;
     font-family: 'JetBrains Mono', monospace; opacity: 0.7;
-    letter-spacing: 0;
   }
   .cta-foot {
     margin-top: 14px; display: flex; justify-content: space-between;
@@ -208,8 +270,8 @@
   .cta-foot a:hover { text-decoration-color: var(--ink); }
 
   /* ============================================ STAGES ============================================ */
-  .stages { margin: clamp(80px, 12vh, 140px) 0; }
-  .stages-head { margin-bottom: clamp(36px, 5vh, 52px); }
+  .stages { margin: var(--space-xxl) 0; }
+  .stages-head { margin-bottom: var(--space-md); }
   .stages-eyebrow {
     font-size: 10.5px; color: var(--ink-mid);
     letter-spacing: 0.08em; text-transform: uppercase;
@@ -240,9 +302,9 @@
   }
 
   /* ============================================ STATEMENTS ============================================ */
-  .statements { margin-top: clamp(48px, 8vh, 80px); }
+  .statements { margin-top: var(--space-md); }
   .statement {
-    padding: clamp(40px, 6vh, 60px) 0;
+    padding: var(--space-md) 0;
     border-top: 1px solid var(--line);
   }
   .statement:last-child { border-bottom: 1px solid var(--line); }
@@ -267,93 +329,67 @@
   }
   .statement-sub strong { color: var(--ink); font-weight: 500; }
 
-  /* ============================================ BUG PULL-QUOTE ============================================ */
-  .bug-quote {
-    margin: clamp(56px, 8vh, 80px) 0;
-    background: var(--bug-bg);
-    padding: clamp(36px, 6vw, 56px) clamp(28px, 5vw, 48px);
-    position: relative;
+  /* ============================================ BUG SECTION — FULL-BLEED BLACK ============================================ */
+  .bug-section {
+    background: var(--ink);
+    color: var(--bg);
+    /* Full bleed — break out of the .page container */
+    margin: var(--space-xxl) calc(50% - 50vw);
+    padding: var(--space-lg) 0;
   }
-  .bug-quote::before {
-    content: 'THE BUG'; position: absolute;
-    top: 18px; left: 28px;
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    font-weight: 600; letter-spacing: 0.12em; color: #8a6d1a;
+  .bug-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 4vw, 32px);
   }
-  .bug-quote-title {
-    font-size: clamp(20px, 2.6vw, 28px); font-weight: 600;
-    letter-spacing: -0.025em; line-height: 1.2;
-    margin-top: 36px; margin-bottom: 20px; max-width: 26ch;
-  }
-  .bug-quote-body {
-    font-size: clamp(14px, 1.5vw, 16px); color: var(--bug-ink);
-    line-height: 1.6; max-width: 60ch;
-  }
-  .bug-quote-body code {
-    background: rgba(0,0,0,0.06); padding: 1px 6px;
-    font-family: 'JetBrains Mono', monospace; font-size: 0.9em;
-    border-radius: 2px;
-  }
-  .bug-quote-body strong { color: #2a1f08; font-weight: 600; }
-  .bug-quote-rule {
-    margin-top: 24px; padding-top: 20px;
-    border-top: 1px solid rgba(0,0,0,0.08);
-    display: flex; gap: 12px; align-items: baseline;
-    font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    color: var(--bug-ink); letter-spacing: -0.005em;
-  }
-  .bug-quote-rule .arrow { color: var(--lav); font-weight: 700; }
-
-  /* The Bug game callout — featured prominently after the quote */
-  .bug-game {
-    margin-top: 28px; padding-top: 24px;
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-  .bug-game-label {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    font-weight: 600; letter-spacing: 0.12em; color: #8a6d1a;
-    margin-bottom: 12px;
-  }
-  .bug-game-title {
-    font-size: clamp(18px, 2.2vw, 22px); font-weight: 600;
-    letter-spacing: -0.02em; line-height: 1.25;
-    margin-bottom: 14px; color: var(--bug-ink);
-    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  }
-  .bug-game-title .glyph {
-    display: inline-block; width: 0.85em; height: 0.85em;
-    background: var(--ink); flex-shrink: 0;
-  }
-  .bug-game-body {
-    font-size: clamp(13px, 1.4vw, 15px); color: var(--bug-ink);
-    line-height: 1.55; max-width: 56ch;
-  }
-  .bug-game-body strong { color: #2a1f08; font-weight: 600; }
-
-  /* ============================================ SWEPT TALLY ============================================ */
-  .swept {
-    margin: clamp(72px, 10vh, 100px) 0 0;
-    padding: clamp(32px, 5vw, 48px);
-    background: var(--lav); color: var(--ink);
-  }
-  .swept-eyebrow {
+  .bug-eyebrow {
     font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    font-weight: 600; letter-spacing: 0.1em;
-    text-transform: uppercase; margin-bottom: 12px;
+    font-weight: 600; letter-spacing: 0.12em;
+    color: var(--lav); margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px;
   }
-  .swept-num {
-    font-size: clamp(54px, 8vw, 88px); font-weight: 600;
-    letter-spacing: -0.04em; line-height: 1;
-    font-variant-numeric: tabular-nums; margin-bottom: 12px;
+  .bug-eyebrow::before {
+    content: ''; width: 12px; height: 12px;
+    background: var(--bg);
+    flex-shrink: 0;
   }
-  .swept-sub {
-    font-size: 14px; line-height: 1.5; max-width: 38ch; opacity: 0.85;
+  .bug-title {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 500; letter-spacing: -0.035em;
+    line-height: 1.05; margin-bottom: 32px;
+    max-width: 16ch;
   }
+  .bug-title .lav-text { color: var(--lav); }
+  .bug-body {
+    font-size: clamp(16px, 1.6vw, 18px);
+    color: rgba(255,255,255,0.75);
+    line-height: 1.55; max-width: 56ch;
+    margin-bottom: 36px;
+  }
+  .bug-body strong { color: var(--bg); font-weight: 500; }
+  .bug-body em { color: var(--lav); font-style: normal; font-weight: 500; }
+  .bug-body code {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.9em;
+    background: rgba(255,255,255,0.08); padding: 2px 6px;
+    color: var(--bg);
+  }
+  .bug-rule {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 24px;
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 16px; align-items: start;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+  }
+  .bug-rule .arrow { color: var(--lav); font-weight: 700; }
+  .bug-rule strong { color: var(--bg); font-weight: 600; }
 
   /* ============================================ FOOTER ============================================ */
   footer {
-    max-width: 760px; margin: clamp(60px, 10vh, 100px) auto 0;
-    padding: 32px clamp(20px, 4vw, 32px);
+    max-width: 760px; margin: var(--space-lg) auto 0;
+    padding: var(--space-sm) clamp(20px, 4vw, 32px);
     border-top: 1px solid var(--line);
     display: flex; justify-content: space-between; align-items: center;
     font-size: 11px; color: var(--ink-mid);
@@ -368,9 +404,8 @@
     position: fixed; inset: 0; background: rgba(10,10,10,0.55);
     z-index: 100; display: none; align-items: center; justify-content: center;
     padding: 20px;
-    opacity: 0; transition: opacity 0.2s;
   }
-  .modal-backdrop.open { display: flex; opacity: 1; }
+  .modal-backdrop.open { display: flex; }
   .modal {
     background: var(--bg); width: 100%; max-width: 440px;
     padding: clamp(28px, 4vw, 40px);
@@ -392,9 +427,7 @@
     font-size: 13px; color: var(--ink-mid); line-height: 1.55;
     margin-bottom: 24px;
   }
-  .modal-field {
-    margin-bottom: 16px;
-  }
+  .modal-field { margin-bottom: 16px; }
   .modal-label {
     display: block; font-size: 10.5px;
     font-family: 'JetBrains Mono', monospace;
@@ -414,9 +447,7 @@
     font-size: 12px; font-family: 'JetBrains Mono', monospace;
     line-height: 1.6;
   }
-  .modal-summary .row {
-    display: flex; justify-content: space-between;
-  }
+  .modal-summary .row { display: flex; justify-content: space-between; }
   .modal-summary .row + .row { margin-top: 4px; }
   .modal-summary .row.divider {
     padding-top: 6px; margin-top: 8px;
@@ -453,9 +484,6 @@
     .ticker-track { font-size: 11px; gap: 28px; padding-left: 28px; }
     .cta { padding: 22px 22px; flex-wrap: wrap; gap: 8px; }
     .stats { gap: 24px; }
-    .bug-quote { padding: 32px 22px; }
-    .bug-quote::before { top: 14px; left: 22px; }
-    .bug-quote-title { margin-top: 32px; }
   }
 </style>
 </head>
@@ -467,8 +495,9 @@
   <div class="ticker-track" id="ticker-track"></div>
 </div>
 
-<div class="page">
+<div class="page page-top">
 
+  <!-- HERO -->
   <section class="hero reveal">
     <div class="hero-art">
       <svg id="hero-canvas" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true"></svg>
@@ -481,6 +510,11 @@
       <span class="lav-text" id="hero-fill">847 placed</span>
       <span class="dot">·</span>
       <span class="bug-text" id="hero-bugs">2 bugs</span>
+    </div>
+    <div class="hero-fomo" id="hero-fomo">
+      <span class="live-dot"></span>
+      <span>LAST MINT</span>
+      <span class="last" id="last-mint-time">12 seconds ago</span>
     </div>
   </section>
 
@@ -501,7 +535,7 @@
     </div>
     <div class="stat">
       <div class="stat-num bug-stat" id="bugs-stat"><span class="bug-dot"></span><span id="bug-count">2</span></div>
-      <div class="stat-lbl">Bugs / ~10</div>
+      <div class="stat-lbl">Bugs claimed / ~10</div>
     </div>
     <div class="stat">
       <div class="stat-num" id="price">0.00573</div>
@@ -528,6 +562,7 @@
     </div>
   </div>
 
+  <!-- STAGES -->
   <section class="stages">
     <div class="stages-head">
       <div class="stages-eyebrow">— The painting</div>
@@ -548,33 +583,27 @@
       </div>
     </div>
   </section>
+</div>
 
-  <!-- BUG PULL-QUOTE -->
-  <aside class="bug-quote">
-    <h2 class="bug-quote-title">The original CryptoPunks contract shipped with a bug.</h2>
-    <p class="bug-quote-body">
-      June 2017. <strong>Larva Labs deployed the first CryptoPunks contract.</strong> A single line let buyers withdraw the funds from their own purchase — taking the punk <em>and</em> getting their ETH back. Sellers got nothing. <strong>The code couldn't be patched.</strong> Blockchain is forever. They deployed V2 two weeks later and airdropped fixed tokens to the original claimants. The V1 contract stayed broken. The V1 punks stayed permanent. <code>0x6Ba6f...</code> still lives on Ethereum, unsealed, untouchable, the original sin and original truth of NFTs.
+<!-- FULL-BLEED BLACK BUG SECTION -->
+<section class="bug-section">
+  <div class="bug-inner">
+    <div class="bug-eyebrow">THE BUG · 1-IN-576 RARITY</div>
+    <h2 class="bug-title">The original CryptoPunks shipped with a bug. <span class="lav-text">We honour it.</span></h2>
+    <p class="bug-body">
+      June 2017. A single line in Larva Labs' contract let buyers withdraw their own purchase funds — taking the punk <em>and</em> getting their ETH back. <strong>The code couldn't be patched.</strong> They deployed V2 two weeks later. <code>0x6Ba6f...</code> still lives on Ethereum, unsealed and untouchable. The original sin and original truth of NFTs.
     </p>
-    <div class="bug-quote-rule">
+    <div class="bug-rule">
       <span class="arrow">→</span>
-      <span><strong>Our pixels work the same way.</strong> Once placed, a pixel cannot be un-placed — not by refund, not by transfer, not by failure. The art outlives the economics. The bug, ported forward as a feature.</span>
+      <span>Every mint has a <strong>1-in-576 chance</strong> of placing a <strong>Bug pixel</strong> — a defect, rendered as a solid black square. You can't choose to mint one. The bug chooses you. ~10 will exist at full mint. They are the rarest pieces in the collection.</span>
     </div>
+  </div>
+</section>
 
-    <!-- THE BUG GAME -->
-    <div class="bug-game">
-      <div class="bug-game-label">FIND THE BUG · 1-IN-576 RARITY</div>
-      <h3 class="bug-game-title">
-        <span class="glyph"></span>
-        Some pixels render as black squares — defects from the original contract.
-      </h3>
-      <p class="bug-game-body">
-        Every mint has a <strong>1-in-576 chance</strong> of placing a Bug pixel. The roll uses the same blockhash randomness that <em>caused</em> the original V1 exploit. Approximately <strong>10 Bug pixels</strong> will exist at full mint. Bug pixels are permanent, named on-chain (<code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.06);padding:1px 5px;">isBug = true</code>), and get a special tag in the patron ticker. They are the rarest, most desirable mints in the collection. <strong>You can't choose to mint a Bug. The bug chooses you.</strong>
-      </p>
-    </div>
-  </aside>
+<div class="page">
 
+  <!-- STATEMENTS -->
   <section class="statements">
-
     <div class="statement">
       <div class="statement-num">01 — Mechanic</div>
       <div class="statement-text">Every donation places one pixel, one layer deep.</div>
@@ -588,51 +617,37 @@
     </div>
 
     <div class="statement">
-      <div class="statement-num">03 — The Bug</div>
-      <div class="statement-text"><span class="bug-square"></span> pixels are rare. 1 in 576.</div>
-      <div class="statement-sub">A homage to the V1 contract bug — a defect, immortalized in the art. Each mint has a 1-in-576 chance of getting a Bug pixel. ~10 expected at full mint. Bug pixels render as solid black squares. They are <strong>permanent on-chain rarities</strong> and tagged in the patron ticker as <code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;">[BUG]</code>. You can't mint one on purpose. The bug chooses you.</div>
-    </div>
-
-    <div class="statement">
-      <div class="statement-num">04 — Price</div>
+      <div class="statement-num">03 — Price</div>
       <div class="statement-text">33 ETH ÷ 5,760 = <span class="lav-text">0.00573 ETH</span> per mint.</div>
       <div class="statement-sub">Roughly $11 USD. Fixed at deploy — no bonding curve, no early-bird discount, no whales-only tier. Everyone pays the same. High enough that 5,760 patrons gets us to V2 floor money. Low enough for anyone with a wallet.</div>
     </div>
 
     <div class="statement">
-      <div class="statement-num">05 — Your NFT</div>
+      <div class="statement-num">04 — Your NFT</div>
       <div class="statement-text">Your token is the canvas at the block you minted.</div>
       <div class="statement-sub">A snapshot. With your pixel marked. Patron #1's piece shows a near-empty canvas. Patron #5,760's piece shows the finished portrait. <strong>5,760 unique moments of the same artwork's becoming.</strong> All on-chain SVG — no IPFS, no external dependency. The token also stores your @handle and whether you got a Bug.</div>
     </div>
 
     <div class="statement">
-      <div class="statement-num">06 — Refunds</div>
+      <div class="statement-num">05 — Refunds</div>
       <div class="statement-text">If we don't reach 33 ETH in 90 days, take your ETH back.</div>
-      <div class="statement-sub">Refunds are trustless and permissionless. Call <code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;">refund()</code>. Your ETH returns. <strong>Your pixel stays on the canvas.</strong> Locked. Permanent. A record of the attempt. (See above — the bug we can't patch.)</div>
+      <div class="statement-sub">Refunds are trustless and permissionless. Call <code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;">refund()</code>. Your ETH returns. <strong>Your pixel stays on the canvas.</strong> Locked. Permanent. A record of the attempt.</div>
     </div>
-
   </section>
 
-  <section class="swept">
-    <div class="swept-eyebrow">V1s acquired so far</div>
-    <div class="swept-num">0</div>
-    <div class="swept-sub">No V1s swept yet. The contract holds all ETH until 33 ETH is reached. Then sweeping begins from the V1 floor. Live tally updates as each acquisition lands.</div>
-  </section>
-
+  <footer>
+    <div class="left">
+      <span>BMAOP</span><span>·</span><span>2026</span>
+    </div>
+    <div class="right">
+      <a href="#" id="contract-link">Contract</a>
+      <a href="#" id="etherscan-link">Etherscan</a>
+      <a href="#" id="x-link">x.com</a>
+    </div>
+  </footer>
 </div>
 
-<footer>
-  <div class="left">
-    <span>BMAOP</span><span>·</span><span>2026</span>
-  </div>
-  <div class="right">
-    <a href="#" id="contract-link">Contract</a>
-    <a href="#" id="etherscan-link">Etherscan</a>
-    <a href="#" id="x-link">x.com</a>
-  </div>
-</footer>
-
-<!-- ============================================ MINT MODAL ============================================ -->
+<!-- MINT MODAL -->
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal" role="dialog" aria-labelledby="modal-title">
     <button class="modal-close" aria-label="Close" id="modal-close">×</button>
@@ -685,17 +700,16 @@
 const GRID = 24;
 const TOTAL = GRID * GRID;
 const LAYERS = 10;
-const MAX_MINTS = TOTAL * LAYERS;          // 5760
+const MAX_MINTS = TOTAL * LAYERS;
 const V2_FLOOR = 33;
-const MINT_PRICE = V2_FLOOR / MAX_MINTS;   // 0.00573 ETH
-const BUG_PROB_DENOM = 576;                // 1-in-576
-
+const MINT_PRICE = V2_FLOOR / MAX_MINTS;
+const BUG_PROB_DENOM = 576;
 const BG_HEX = { r: 0xfb, g: 0xfa, b: 0xf7 };
 const V1_HEX = { r: 0xa6, g: 0x9a, b: 0xfe };
 const BUG_COLOR = '#0a0a0a';
 
 // =================================================================
-// PALETTE — 10 shades from bg to V1
+// PALETTE
 // =================================================================
 function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
 function toHex(c) { return c.toString(16).padStart(2, '0'); }
@@ -723,16 +737,14 @@ function mulberry32(seed) {
 }
 
 // =================================================================
-// CANVAS BUILDER (mirrors contract logic)
-//   counts[cellIdx] = layers stacked
-//   bugs = Set of cellIdx that are Bug pixels (permanent override)
+// CANVAS BUILDER
+// Returns the *sequence* of mint events so we can animate them in order
 // =================================================================
-function buildCanvas(numMints, seed = 42) {
+function buildMintSequence(numMints, seed = 42) {
   const counts = new Array(TOTAL).fill(0);
-  const bugs = new Set();
+  const sequence = []; // each entry: { cellIdx, layer, isBug }
   const rng = mulberry32(seed);
   for (let i = 0; i < numMints; i++) {
-    // Bug roll first (uses one rng tick)
     const isBug = rng() < (1 / BUG_PROB_DENOM);
     let idx = Math.floor(rng() * TOTAL);
     let attempts = 0;
@@ -742,17 +754,30 @@ function buildCanvas(numMints, seed = 42) {
     }
     if (counts[idx] < LAYERS) {
       counts[idx]++;
-      if (isBug) bugs.add(idx);
+      sequence.push({ cellIdx: idx, layer: counts[idx], isBug });
     }
+  }
+  return { sequence, counts };
+}
+
+// Build a final-state {counts, bugs} from a sequence
+function finalize(sequence) {
+  const counts = new Array(TOTAL).fill(0);
+  const bugs = new Set();
+  for (const m of sequence) {
+    counts[m.cellIdx] = m.layer;
+    if (m.isBug) bugs.add(m.cellIdx);
   }
   return { counts, bugs };
 }
 
 // =================================================================
-// RENDER
+// RENDERERS
 // =================================================================
 const CELL = 240 / GRID;
-function renderCanvas({ counts, bugs }, highlightIdx = -1) {
+
+// Static render for the side stages
+function renderStatic({ counts, bugs }) {
   let svg = '';
   for (let i = 0; i < TOTAL; i++) {
     if (counts[i] === 0) continue;
@@ -764,56 +789,207 @@ function renderCanvas({ counts, bugs }, highlightIdx = -1) {
       svg += `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${SHADES[counts[i] - 1]}"/>`;
     }
   }
-  if (highlightIdx >= 0 && counts[highlightIdx] > 0) {
-    const x = (highlightIdx % GRID) * CELL;
-    const y = Math.floor(highlightIdx / GRID) * CELL;
-    const len = CELL * 0.4;
-    const gap = 1.5;
-    svg += `
-      <g stroke="${BUG_COLOR}" stroke-width="0.6" fill="none">
-        <path d="M ${x - gap - len} ${y - gap} L ${x - gap} ${y - gap} L ${x - gap} ${y - gap - len}"/>
-        <path d="M ${x + CELL + gap + len} ${y - gap} L ${x + CELL + gap} ${y - gap} L ${x + CELL + gap} ${y - gap - len}"/>
-        <path d="M ${x - gap - len} ${y + CELL + gap} L ${x - gap} ${y + CELL + gap} L ${x - gap} ${y + CELL + gap + len}"/>
-        <path d="M ${x + CELL + gap + len} ${y + CELL + gap} L ${x + CELL + gap} ${y + CELL + gap} L ${x + CELL + gap} ${y + CELL + gap + len}"/>
-      </g>
-    `;
+  return svg;
+}
+
+// Add the corner-tick highlight on a specific cell
+function corners(cellIdx) {
+  const x = (cellIdx % GRID) * CELL;
+  const y = Math.floor(cellIdx / GRID) * CELL;
+  const len = CELL * 0.4;
+  const gap = 1.5;
+  return `<g stroke="${BUG_COLOR}" stroke-width="0.6" fill="none">
+    <path d="M ${x - gap - len} ${y - gap} L ${x - gap} ${y - gap} L ${x - gap} ${y - gap - len}"/>
+    <path d="M ${x + CELL + gap + len} ${y - gap} L ${x + CELL + gap} ${y - gap} L ${x + CELL + gap} ${y - gap - len}"/>
+    <path d="M ${x - gap - len} ${y + CELL + gap} L ${x - gap} ${y + CELL + gap} L ${x - gap} ${y + CELL + gap + len}"/>
+    <path d="M ${x + CELL + gap + len} ${y + CELL + gap} L ${x + CELL + gap} ${y + CELL + gap} L ${x + CELL + gap} ${y + CELL + gap + len}"/>
+  </g>`;
+}
+
+// =================================================================
+// HERO: animated build-in then live trickle
+// =================================================================
+const DEMO_MINTS = 847;
+const { sequence: heroSeq } = buildMintSequence(DEMO_MINTS, 42);
+const heroFinal = finalize(heroSeq);
+
+// Build the SVG with all rects, each tagged with a stagger delay
+function buildAnimatedHero(sequence, highlightIdx = -1) {
+  // For each cell that's filled, find the LAST mint that updated it
+  // — that determines its visual shade. Order rects by mint timestamp
+  // so the staggered animation matches the mint chronology.
+  const lastUpdate = new Map(); // cellIdx -> { layer, isBug, mintIdx }
+  sequence.forEach((m, i) => {
+    lastUpdate.set(m.cellIdx, { layer: m.layer, isBug: m.isBug, mintIdx: i });
+  });
+
+  // We want pixels to appear in the order they were minted. To prevent
+  // the build-in animation from taking forever for 847 mints, we use a
+  // logarithmic time curve so most rects animate in the first ~1.8s.
+  const total = sequence.length;
+  const buildDuration = 1800; // ms
+  const totalAnimRange = buildDuration / 1000; // s
+
+  let svg = '';
+  // Iterate in mint order to apply stagger delays
+  const seenCell = new Map();
+  for (let i = 0; i < total; i++) {
+    const m = sequence[i];
+    // We only render the FINAL state of each cell, so skip earlier visits
+    if (seenCell.has(m.cellIdx)) continue;
+    const final = lastUpdate.get(m.cellIdx);
+    seenCell.set(m.cellIdx, true);
+
+    const x = (m.cellIdx % GRID) * CELL;
+    const y = Math.floor(m.cellIdx / GRID) * CELL;
+    const color = final.isBug ? BUG_COLOR : SHADES[final.layer - 1];
+
+    // Stagger: ease the delay so most mints land in the first half
+    const t = i / total;
+    const eased = 1 - Math.pow(1 - t, 2);
+    const delay = (eased * totalAnimRange).toFixed(3);
+
+    svg += `<rect class="pixel-anim" x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${color}" style="animation-delay: ${delay}s"/>`;
+  }
+
+  if (highlightIdx >= 0) {
+    svg += corners(highlightIdx);
   }
   return svg;
 }
 
-// =================================================================
-// DEMO STATE — stable seed
-// =================================================================
-const DEMO_MINTS = 847;
-const heroState = buildCanvas(DEMO_MINTS, 42);
+// Initial render with build-in animation
 let highlightIdx = -1;
 for (let i = TOTAL - 1; i >= 0; i--) {
-  if (heroState.counts[i] > 0) { highlightIdx = i; break; }
+  if (heroFinal.counts[i] > 0) { highlightIdx = i; break; }
 }
-document.getElementById('hero-canvas').innerHTML = renderCanvas(heroState, highlightIdx);
-document.getElementById('hero-fill').textContent = DEMO_MINTS.toLocaleString() + ' placed';
-document.getElementById('hero-bugs').textContent = heroState.bugs.size + (heroState.bugs.size === 1 ? ' bug' : ' bugs');
+const hero = document.getElementById('hero-canvas');
+hero.innerHTML = buildAnimatedHero(heroSeq, highlightIdx);
 
-// Three stages
-document.getElementById('stage-1').innerHTML = renderCanvas(buildCanvas(200, 7));
-document.getElementById('stage-2').innerHTML = renderCanvas(buildCanvas(2500, 7));
-document.getElementById('stage-3').innerHTML = renderCanvas(buildCanvas(5760, 7));
+// After build-in completes, swap to static render (no anim class) so
+// further updates can animate just the new pixel
+setTimeout(() => {
+  hero.innerHTML = renderStatic(heroFinal) + corners(highlightIdx);
+}, 2400);
 
-// Stats
+// =================================================================
+// LIVE TRICKLE: simulate new mints arriving every 8-20s
+// =================================================================
+let liveCounts = [...heroFinal.counts];
+let liveBugs = new Set(heroFinal.bugs);
+let liveMintCount = DEMO_MINTS;
+let lastMintAt = Date.now();
+
+function placeNewPixel() {
+  // Pick a random non-full cell
+  const available = [];
+  for (let i = 0; i < TOTAL; i++) if (liveCounts[i] < LAYERS) available.push(i);
+  if (available.length === 0) return;
+  const cellIdx = available[Math.floor(Math.random() * available.length)];
+  liveCounts[cellIdx]++;
+  liveMintCount++;
+  const isBug = Math.random() < (1 / BUG_PROB_DENOM);
+  if (isBug) liveBugs.add(cellIdx);
+
+  // Highlight that new pixel for ~3s
+  highlightIdx = cellIdx;
+  const finalState = { counts: liveCounts, bugs: liveBugs };
+
+  // Render with the new pixel marked as .pixel-new for a quick pop animation
+  let svg = '';
+  for (let i = 0; i < TOTAL; i++) {
+    if (liveCounts[i] === 0) continue;
+    const x = (i % GRID) * CELL;
+    const y = Math.floor(i / GRID) * CELL;
+    const color = liveBugs.has(i) ? BUG_COLOR : SHADES[liveCounts[i] - 1];
+    const cls = i === cellIdx ? 'pixel-new' : '';
+    svg += `<rect class="${cls}" x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${color}"/>`;
+  }
+  svg += corners(highlightIdx);
+  hero.innerHTML = svg;
+
+  // Update stats
+  document.getElementById('hero-fill').textContent = liveMintCount + ' placed';
+  document.getElementById('hero-bugs').textContent = liveBugs.size + (liveBugs.size === 1 ? ' bug' : ' bugs');
+  const patronsEl = document.getElementById('patrons');
+  patronsEl.textContent = liveMintCount.toLocaleString();
+  patronsEl.classList.remove('flash');
+  void patronsEl.offsetWidth; // restart animation
+  patronsEl.classList.add('flash');
+
+  document.getElementById('bug-count').textContent = liveBugs.size;
+  if (isBug) {
+    const bugStat = document.getElementById('bugs-stat');
+    bugStat.classList.remove('flash');
+    void bugStat.offsetWidth;
+    bugStat.classList.add('flash');
+  }
+
+  const newRaised = (liveMintCount * MINT_PRICE).toFixed(3);
+  const raisedEl = document.getElementById('raised');
+  raisedEl.textContent = newRaised;
+  raisedEl.classList.remove('flash');
+  void raisedEl.offsetWidth;
+  raisedEl.classList.add('flash');
+
+  const newPct = (newRaised / V2_FLOOR) * 100;
+  document.getElementById('progress-pct').textContent = newPct.toFixed(1) + '%';
+  document.getElementById('progress-fill').style.width = newPct + '%';
+
+  // Update FOMO timer
+  lastMintAt = Date.now();
+  updateFomoTime();
+}
+
+function updateFomoTime() {
+  const sec = Math.floor((Date.now() - lastMintAt) / 1000);
+  let label;
+  if (sec < 60) label = `${sec} second${sec === 1 ? '' : 's'} ago`;
+  else if (sec < 3600) label = `${Math.floor(sec/60)} minute${Math.floor(sec/60) === 1 ? '' : 's'} ago`;
+  else label = `${Math.floor(sec/3600)} hour${Math.floor(sec/3600) === 1 ? '' : 's'} ago`;
+  document.getElementById('last-mint-time').textContent = label;
+}
+
+// Start the live trickle 4s after build-in completes
+setTimeout(() => {
+  setInterval(updateFomoTime, 1000);
+  // First arrival at random 6-15s, then 8-20s thereafter
+  function schedule() {
+    const delay = 8000 + Math.random() * 12000;
+    setTimeout(() => {
+      placeNewPixel();
+      schedule();
+    }, delay);
+  }
+  schedule();
+}, 3000);
+
+// =================================================================
+// STAGES (static, no animation needed)
+// =================================================================
+document.getElementById('stage-1').innerHTML = renderStatic(finalize(buildMintSequence(200, 7).sequence));
+document.getElementById('stage-2').innerHTML = renderStatic(finalize(buildMintSequence(2500, 7).sequence));
+document.getElementById('stage-3').innerHTML = renderStatic(finalize(buildMintSequence(5760, 7).sequence));
+
+// =================================================================
+// STATS INITIAL
+// =================================================================
 const raised = (DEMO_MINTS * MINT_PRICE).toFixed(3);
 document.getElementById('raised').textContent = raised;
 document.getElementById('patrons').textContent = DEMO_MINTS.toLocaleString();
 document.getElementById('price').textContent = MINT_PRICE.toFixed(5);
-document.getElementById('bug-count').textContent = heroState.bugs.size;
+document.getElementById('bug-count').textContent = heroFinal.bugs.size;
+document.getElementById('hero-fill').textContent = DEMO_MINTS + ' placed';
+document.getElementById('hero-bugs').textContent = heroFinal.bugs.size + (heroFinal.bugs.size === 1 ? ' bug' : ' bugs');
 
 const pct = (raised / V2_FLOOR) * 100;
 document.getElementById('progress-pct').textContent = pct.toFixed(1) + '%';
 setTimeout(() => {
   document.getElementById('progress-fill').style.width = pct + '%';
-}, 300);
+}, 800);
 
 // =================================================================
-// TICKER — demo handles + occasional [BUG] tag
+// TICKER
 // =================================================================
 const DEMO_HANDLES = [
   '@vincentvanduke','@punk6529','@gmoney','@beaniemaxi','@deezefi','@cozomo_medici',
@@ -826,24 +1002,18 @@ const DEMO_HANDLES = [
 function renderTicker() {
   const track = document.getElementById('ticker-track');
   const items = [];
-  // Mark specific mints as bugs — match the demo state approximately
-  const bugMints = new Set([843, 821]); // demo: last 2 bugs were these mints
+  const bugMints = new Set([843, 821]);
+  const times = ['12s', '34s', '1m', '2m', '4m', '7m', '11m', '18m'];
   for (let i = 0; i < DEMO_HANDLES.length; i++) {
     const handle = DEMO_HANDLES[i % DEMO_HANDLES.length];
     const num = DEMO_MINTS - i;
     const bugTag = bugMints.has(num) ? '<span class="bug-tag">BUG</span>' : '';
-    items.push(`<span>${handle}<span class="pixel-num">#${num.toLocaleString()}</span>${bugTag}</span>`);
+    const time = i < times.length ? `<span class="time">${times[i]}</span>` : '';
+    items.push(`<span>${handle}<span class="pixel-num">#${num.toLocaleString()}</span>${bugTag}${time}</span>`);
   }
   track.innerHTML = items.join('') + items.join('');
 }
 renderTicker();
-
-setInterval(() => {
-  const filled = [];
-  for (let i = 0; i < TOTAL; i++) if (heroState.counts[i] > 0) filled.push(i);
-  highlightIdx = filled[Math.floor(Math.random() * filled.length)];
-  document.getElementById('hero-canvas').innerHTML = renderCanvas(heroState, highlightIdx);
-}, 5000);
 
 // =================================================================
 // MINT MODAL
@@ -858,26 +1028,18 @@ function openModal() {
   step2.classList.remove('active');
   setTimeout(() => document.getElementById('handle-input').focus(), 100);
 }
-function closeModal() {
-  modal.classList.remove('open');
-}
+function closeModal() { modal.classList.remove('open'); }
 
 document.getElementById('mint-btn').addEventListener('click', openModal);
 document.getElementById('modal-close').addEventListener('click', closeModal);
-modal.addEventListener('click', e => {
-  if (e.target === modal) closeModal();
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-});
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 document.getElementById('connect-btn').addEventListener('click', () => {
   const handle = document.getElementById('handle-input').value.trim() || '(no handle)';
   document.getElementById('confirm-handle').textContent = handle;
   step1.classList.remove('active');
   step2.classList.add('active');
-  // In production: wagmi/RainbowKit connectAndMint() here.
-  // For demo, just show the confirmation step.
   setTimeout(() => {
     document.getElementById('confirm-status').textContent = 'Demo — wallet integration pending';
   }, 1500);
@@ -888,8 +1050,7 @@ document.getElementById('refund-btn').addEventListener('click', (e) => {
   alert(
     'Refunds: available if the pool doesn\'t reach 33 ETH in 90 days.\n\n' +
     'Any patron can call refund() — no permission, no human in the loop. ETH returns directly.\n\n' +
-    'Your pixel stays on the canvas. Forever. Locked. The art outlives the economics.\n\n' +
-    'The V1 bug couldn\'t be patched. Neither can your pixel.'
+    'Your pixel stays on the canvas. Forever. Locked. The art outlives the economics.'
   );
 });
 </script>
