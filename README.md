@@ -1,6 +1,6 @@
-# BMAOP
+# HMSOP
 
-Static landing page for Buy Me An Original Punk.
+Static landing page for **Help Me Sweep Original Punks**.
 
 ## Deploy
 
@@ -24,7 +24,7 @@ vercel --prod
 ## Files
 
 - `index.html` — landing page, self-contained
-- `favicon.svg` — favicon
+- `favicon.svg` — favicon (solid V1 lavender pixel)
 - `og.png` — 1200×630 share card
 - `vercel.json` — config
 
@@ -33,7 +33,7 @@ vercel --prod
 In `index.html`, update these to match your domain:
 
 ```html
-<meta property="og:url" content="https://bmaop.xyz" />
+<meta property="og:url" content="https://hmsop.xyz" />
 ```
 
 And the footer links to your real X account and contract page once those exist.

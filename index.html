@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BMAOP — Buy me an 'original' punk.</title>
-<meta name="description" content="5,760 patrons sweep V1 CryptoPunks up to the V2 floor. Every donation deepens one pixel toward V1 lavender. The bug we can't patch is the proof we're original." />
-<meta property="og:title" content="BMAOP — Buy me an 'original' punk." />
-<meta property="og:description" content="5,760 patrons. We sweep V1s up to the V2 floor. The bug we can't patch is the proof we're original." />
+<title>HMSOP — Help me sweep original punks.</title>
+<meta name="description" content="5,760 patrons help sweep V1 CryptoPunks up to the V2 floor. Every ~4 ETH the pool sweeps another V1 from the floor. 9 Alien pixels — matching the 9 V1 Alien punks — chosen at random." />
+<meta property="og:title" content="HMSOP — Help me sweep original punks." />
+<meta property="og:description" content="5,760 patrons. We sweep V1s continuously up to the V2 floor. 9 Alien pixels — matching the 9 V1 Aliens — chosen at random." />
 <meta property="og:image" content="/og.png" />
-<meta property="og:url" content="https://bmaop.xyz" />
+<meta property="og:url" content="https://hmsop.xyz" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="BMAOP — Buy me an 'original' punk." />
-<meta name="twitter:description" content="5,760 patrons. We sweep V1s up to the V2 floor." />
+<meta name="twitter:title" content="HMSOP — Help me sweep original punks." />
+<meta name="twitter:description" content="5,760 patrons. We sweep V1s continuously up to the V2 floor. 9 Alien pixels chosen at random." />
 <meta name="twitter:image" content="/og.png" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,9 +25,9 @@
     --ink-mid: #6e6e6e;
     --ink-faint: #c8c5be;
     --lav: #a69afe;
+    --alien: #c7fafb;          /* V1 alien punks background — rare trait color */
     --line: #ece9e2;
 
-    /* checks.art-grade spacing scale */
     --space-xs: clamp(12px, 1.5vh, 18px);
     --space-sm: clamp(20px, 3vh, 32px);
     --space-md: clamp(40px, 6vh, 64px);
@@ -48,6 +48,18 @@
   button { font-family: inherit; }
   input { font-family: inherit; }
   ::selection { background: var(--lav); color: var(--ink); }
+
+  /* ===== TYPOGRAPHY — anti-orphan/widow defaults ===== */
+  /* text-wrap: pretty (Chrome 117+, Safari 17.4+, Firefox 121+) prevents
+     single-word last lines (orphans) and short trailing lines (widows).
+     We apply it to every block of running prose. */
+  p, .lede, .statement-sub, .bug-body, .swept-sub {
+    text-wrap: pretty;
+    hyphens: none;
+  }
+  h1, h2, h3, .headline, .statement-text, .stages-title, .bug-title, .swept-num {
+    text-wrap: balance;
+  }
 
   /* ============================================ TICKER ============================================ */
   .ticker {
@@ -82,11 +94,12 @@
     margin-left: 6px; font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
   }
-  .ticker-track .bug-tag {
-    display: inline-block; background: var(--ink); color: var(--bg);
+  .ticker-track .alien-tag {
+    display: inline-block; background: var(--ink); color: var(--alien);
     font-family: 'JetBrains Mono', monospace; font-size: 9px;
     padding: 2px 5px; margin-left: 6px; letter-spacing: 0.06em;
     text-transform: uppercase; vertical-align: 1px;
+    font-weight: 600;
   }
   .ticker-track .time {
     color: var(--ink-faint); font-family: 'JetBrains Mono', monospace;
@@ -118,52 +131,16 @@
     letter-spacing: 0.08em; text-transform: uppercase;
     font-weight: 500; font-family: 'JetBrains Mono', monospace;
     flex-wrap: wrap; justify-content: center;
-    margin-bottom: 14px;
   }
   .hero-caption .dot { color: var(--ink-faint); }
-  .hero-caption .lav-text { color: var(--lav); }
-  .hero-caption .bug-text { color: var(--ink); }
-  .hero-caption .bug-text::before {
-    content: '■'; margin-right: 5px; vertical-align: -1px; font-size: 9px;
-  }
-  /* FOMO line under the caption */
-  .hero-fomo {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    color: var(--ink); letter-spacing: 0.04em;
-    display: flex; align-items: center; gap: 8px;
-    opacity: 0; animation: fadein 0.6s ease-out 1.8s forwards;
-  }
-  .hero-fomo .live-dot {
-    width: 6px; height: 6px; background: var(--lav);
-    border-radius: 50%; animation: pulse 1.6s ease-in-out infinite;
-  }
-  .hero-fomo .last { color: var(--ink-mid); }
-  @keyframes fadein { to { opacity: 1; } }
-
-  /* Pixel build-in animation */
-  .hero-art svg rect.pixel-anim {
-    opacity: 0;
-    animation: pop 0.4s cubic-bezier(.2,.7,.2,1) forwards;
-  }
-  @keyframes pop {
-    0% { opacity: 0; transform: scale(0.6); transform-origin: center; }
-    60% { opacity: 1; transform: scale(1.15); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-  /* Subtle continuous breathing for new arriving pixels */
-  .hero-art svg rect.pixel-new {
-    animation: pop 0.5s cubic-bezier(.2,.7,.2,1);
-  }
 
   /* ============================================ HEADLINE ============================================ */
-  /* CRITICAL FIX: the lavender highlight is now a positioned pseudo-element
-     behind the text — so it can't clip into adjacent lines. */
   .headline {
     font-size: clamp(34px, 5.6vw, 64px);
     font-weight: 500; letter-spacing: -0.04em;
     line-height: 1.08;
     margin-bottom: var(--space-md);
-    max-width: 14ch; text-wrap: balance;
+    max-width: 16ch;
   }
   .headline .original {
     font-weight: 700; font-style: normal;
@@ -173,8 +150,6 @@
     display: inline-block;
     z-index: 1;
   }
-  /* The highlight sits as a pseudo-element behind, sized to the word's
-     x-height region only, so it never reaches into the previous line. */
   .headline .original::before {
     content: '';
     position: absolute;
@@ -214,10 +189,14 @@
     0%   { background: rgba(166,154,254,0.3); }
     100% { background: transparent; }
   }
-  .stat-num.bug-stat { display: flex; align-items: baseline; gap: 8px; }
+  .stat-num.bug-stat { display: flex; align-items: center; gap: 12px; }
   .stat-num.bug-stat .bug-dot {
-    display: inline-block; width: 14px; height: 14px;
-    background: var(--ink); flex-shrink: 0;
+    display: inline-block;
+    width: 0.6em; height: 0.6em;
+    background: var(--alien); flex-shrink: 0;
+    /* The alien cyan is very pale on off-white; a thin black border keeps the
+       small square readable in the stat row */
+    box-shadow: inset 0 0 0 1px rgba(10,10,10,0.85);
   }
   .stat-lbl {
     font-size: 10.5px; color: var(--ink-mid);
@@ -269,6 +248,89 @@
   }
   .cta-foot a:hover { text-decoration-color: var(--ink); }
 
+  /* ============================================ SWEPT GALLERY ============================================ */
+  .swept-section {
+    margin: var(--space-xxl) 0;
+  }
+  .swept-head {
+    margin-bottom: var(--space-md);
+    display: flex; align-items: baseline; justify-content: space-between;
+    flex-wrap: wrap; gap: 14px;
+  }
+  .swept-eyebrow {
+    font-size: 10.5px; color: var(--ink-mid);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    font-weight: 500; font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 14px;
+  }
+  .swept-title {
+    font-size: clamp(22px, 2.8vw, 30px);
+    font-weight: 500; letter-spacing: -0.025em;
+    line-height: 1.15; max-width: 24ch;
+  }
+  .swept-title .lav-text { color: var(--lav); }
+  .swept-count {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--ink-mid); letter-spacing: 0.04em;
+  }
+  .swept-count .num {
+    color: var(--lav); font-weight: 600; font-size: 14px;
+  }
+
+  .swept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: clamp(12px, 2vw, 18px);
+  }
+  .punk-card {
+    background: var(--lav);
+    aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .punk-card.placeholder {
+    background: transparent;
+    border: 1px dashed var(--line);
+    color: var(--ink-faint);
+  }
+  .punk-card svg { width: 70%; height: 70%; }
+  .punk-meta {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 8px 10px;
+    background: rgba(10,10,10,0.85);
+    color: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px; letter-spacing: 0.04em;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .punk-meta .id { font-weight: 600; }
+  .punk-meta .price { opacity: 0.7; }
+  .punk-card.placeholder .punk-meta {
+    background: transparent;
+    color: var(--ink-faint);
+  }
+  .swept-empty {
+    padding: clamp(36px, 5vw, 56px) clamp(28px, 4vw, 44px);
+    border: 1px solid var(--line);
+    text-align: center;
+    background: var(--bg);
+  }
+  .swept-empty-num {
+    font-size: clamp(48px, 7vw, 72px);
+    font-weight: 600; letter-spacing: -0.04em; line-height: 1;
+    color: var(--lav); margin-bottom: 16px;
+    font-variant-numeric: tabular-nums;
+  }
+  .swept-empty-text {
+    font-size: clamp(13px, 1.4vw, 15px);
+    color: var(--ink-mid); line-height: 1.55;
+    max-width: 44ch; margin: 0 auto;
+  }
+
   /* ============================================ STAGES ============================================ */
   .stages { margin: var(--space-xxl) 0; }
   .stages-head { margin-bottom: var(--space-md); }
@@ -315,13 +377,15 @@
   }
   .statement-text {
     font-size: clamp(22px, 3vw, 32px); font-weight: 500;
-    letter-spacing: -0.025em; line-height: 1.18; max-width: 22ch;
+    letter-spacing: -0.025em; line-height: 1.18; max-width: 24ch;
   }
   .statement-text .lav-text { color: var(--lav); }
   .statement-text .bug-square {
     display: inline-block; width: 0.7em; height: 0.7em;
-    background: var(--ink); vertical-align: middle;
+    background: var(--alien); vertical-align: middle;
     margin: 0 0.08em -0.05em;
+    /* Black outline so the small alien square reads on off-white BG */
+    box-shadow: inset 0 0 0 1px rgba(10,10,10,0.85);
   }
   .statement-sub {
     margin-top: 18px; font-size: clamp(14px, 1.4vw, 16px);
@@ -329,11 +393,10 @@
   }
   .statement-sub strong { color: var(--ink); font-weight: 500; }
 
-  /* ============================================ BUG SECTION — FULL-BLEED BLACK ============================================ */
+  /* ============================================ BUG SECTION ============================================ */
   .bug-section {
     background: var(--ink);
     color: var(--bg);
-    /* Full bleed — break out of the .page container */
     margin: var(--space-xxl) calc(50% - 50vw);
     padding: var(--space-lg) 0;
   }
@@ -357,7 +420,7 @@
     font-size: clamp(32px, 5vw, 56px);
     font-weight: 500; letter-spacing: -0.035em;
     line-height: 1.05; margin-bottom: 32px;
-    max-width: 16ch;
+    max-width: 18ch;
   }
   .bug-title .lav-text { color: var(--lav); }
   .bug-body {
@@ -382,6 +445,7 @@
     color: rgba(255,255,255,0.85);
     line-height: 1.5;
     letter-spacing: -0.005em;
+    text-wrap: pretty;
   }
   .bug-rule .arrow { color: var(--lav); font-weight: 700; }
   .bug-rule strong { color: var(--bg); font-weight: 600; }
@@ -426,6 +490,7 @@
   .modal-body {
     font-size: 13px; color: var(--ink-mid); line-height: 1.55;
     margin-bottom: 24px;
+    text-wrap: pretty;
   }
   .modal-field { margin-bottom: 16px; }
   .modal-label {
@@ -466,6 +531,7 @@
   .modal-fine {
     margin-top: 14px; font-size: 11px; color: var(--ink-mid);
     text-align: center; line-height: 1.5;
+    text-wrap: pretty;
   }
   .modal-step { display: none; }
   .modal-step.active { display: block; }
@@ -497,7 +563,7 @@
 
 <div class="page page-top">
 
-  <!-- HERO -->
+  <!-- HERO — looping canvas animation, no live count -->
   <section class="hero reveal">
     <div class="hero-art">
       <svg id="hero-canvas" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true"></svg>
@@ -505,25 +571,23 @@
     <div class="hero-caption">
       <span>24 × 24</span>
       <span class="dot">·</span>
+      <span>576 cells</span>
+      <span class="dot">·</span>
+      <span>10 layers</span>
+      <span class="dot">·</span>
       <span>5,760 mints</span>
-      <span class="dot">·</span>
-      <span class="lav-text" id="hero-fill">847 placed</span>
-      <span class="dot">·</span>
-      <span class="bug-text" id="hero-bugs">2 bugs</span>
-    </div>
-    <div class="hero-fomo" id="hero-fomo">
-      <span class="live-dot"></span>
-      <span>LAST MINT</span>
-      <span class="last" id="last-mint-time">12 seconds ago</span>
     </div>
   </section>
 
-  <h1 class="headline reveal">Buy me an <span class="original">original</span> punk. Or get a refund.</h1>
+  <!-- HEADLINE — rebranded to "Help me sweep" -->
+  <h1 class="headline reveal">Help me sweep <span class="original">original</span> punks. Or get a refund.</h1>
 
+  <!-- LEDE — non-breaking spaces to prevent orphans on the last few words -->
   <p class="lede reveal">
-    5,760 patrons sweep V1 CryptoPunks up to the V2 floor. <span class="faint">Each donation deepens one pixel toward V1 lavender. When the pool hits 33 ETH, we sweep the V1 floor. If we don't make it in 90 days, you get your ETH back — and keep your pixel.</span>
+    5,760 patrons help us sweep V1&nbsp;CryptoPunks. <span class="faint">Every time the pool accumulates the current V1&nbsp;floor (~4&nbsp;ETH), the contract automatically buys one&nbsp;V1. We keep going up to 33&nbsp;ETH&nbsp;—&nbsp;the V2&nbsp;floor.</span>
   </p>
 
+  <!-- STATS — V1s swept is now front and centre -->
   <div class="stats reveal">
     <div class="stat">
       <div class="stat-num accent" id="raised">4.852</div>
@@ -534,35 +598,52 @@
       <div class="stat-lbl">Mints / 5,760</div>
     </div>
     <div class="stat">
-      <div class="stat-num bug-stat" id="bugs-stat"><span class="bug-dot"></span><span id="bug-count">2</span></div>
-      <div class="stat-lbl">Bugs claimed / ~10</div>
+      <div class="stat-num accent" id="v1s-swept">1</div>
+      <div class="stat-lbl">V1s swept</div>
     </div>
     <div class="stat">
-      <div class="stat-num" id="price">0.00573</div>
-      <div class="stat-lbl">ETH / mint</div>
+      <div class="stat-num bug-stat" id="aliens-stat"><span class="bug-dot"></span><span id="alien-count">1</span></div>
+      <div class="stat-lbl">Aliens claimed / 9</div>
     </div>
   </div>
 
+  <!-- PROGRESS -->
   <div class="progress reveal">
     <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     <div class="progress-meta">
-      <span>POOL — HELD UNTIL 33 ETH</span>
-      <span><span class="lav-text" id="progress-pct">14.7%</span> · OF V2 FLOOR</span>
+      <span>POOL — TARGET 33 ETH (V2 FLOOR)</span>
+      <span><span class="lav-text" id="progress-pct">14.7%</span></span>
     </div>
   </div>
 
+  <!-- CTA -->
   <div class="cta-block reveal">
     <button class="cta" id="mint-btn">
       <span>Place your pixel</span>
       <span class="cta-price">0.00573 ETH · ~$11</span>
     </button>
     <div class="cta-foot">
-      <span>Mint price = 33 ETH ÷ 5,760. ETH is held — nothing is swept until 33 is reached.</span>
+      <span>The contract sweeps a V1 every time the pool can afford the floor.</span>
       <a href="#" id="refund-btn">Refund →</a>
     </div>
   </div>
 
-  <!-- STAGES -->
+  <!-- SWEPT GALLERY — V1s acquired so far -->
+  <section class="swept-section">
+    <div class="swept-head">
+      <div>
+        <div class="swept-eyebrow">— V1s acquired</div>
+        <h2 class="swept-title">Each sweep is automatic. <span class="lav-text">No human in the loop.</span></h2>
+      </div>
+      <div class="swept-count"><span class="num" id="swept-num">1</span> SWEPT · TARGET ~8</div>
+    </div>
+    <!-- Grid of swept V1s. When live: populated from contract events.
+         Each placeholder shows ID, price, timestamp. Real punk art will
+         render here once the contract is deployed and reads V1 metadata. -->
+    <div class="swept-grid" id="swept-grid"></div>
+  </section>
+
+  <!-- STAGES — how the canvas evolves -->
   <section class="stages">
     <div class="stages-head">
       <div class="stages-eyebrow">— The painting</div>
@@ -585,17 +666,17 @@
   </section>
 </div>
 
-<!-- FULL-BLEED BLACK BUG SECTION -->
+<!-- BUG SECTION -->
 <section class="bug-section">
   <div class="bug-inner">
-    <div class="bug-eyebrow">THE BUG · 1-IN-576 RARITY</div>
-    <h2 class="bug-title">The original CryptoPunks shipped with a bug. <span class="lav-text">We honour it.</span></h2>
+    <div class="bug-eyebrow">THE BUG · 1-IN-640 RARITY</div>
+    <h2 class="bug-title">The original CryptoPunks shipped with a&nbsp;bug. <span class="lav-text">We honour it.</span></h2>
     <p class="bug-body">
-      June 2017. A single line in Larva Labs' contract let buyers withdraw their own purchase funds — taking the punk <em>and</em> getting their ETH back. <strong>The code couldn't be patched.</strong> They deployed V2 two weeks later. <code>0x6Ba6f...</code> still lives on Ethereum, unsealed and untouchable. The original sin and original truth of NFTs.
+      June 2017. A single line in Larva Labs' contract let buyers withdraw their own purchase funds — taking the punk <em>and</em> getting their ETH&nbsp;back. <strong>The code couldn't be patched.</strong> They deployed V2 two weeks&nbsp;later. <code>0x6Ba6f...</code> still lives on Ethereum, unsealed and untouchable. The original sin and original truth of&nbsp;NFTs.
     </p>
     <div class="bug-rule">
       <span class="arrow">→</span>
-      <span>Every mint has a <strong>1-in-576 chance</strong> of placing a <strong>Bug pixel</strong> — a defect, rendered as a solid black square. You can't choose to mint one. The bug chooses you. ~10 will exist at full mint. They are the rarest pieces in the collection.</span>
+      <span>Every mint has a <strong>1-in-640 chance</strong> of placing an <strong>Alien&nbsp;pixel</strong> — pale cyan, like the <strong>9 Alien punks</strong> in the V1&nbsp;collection. ~9 will exist at full&nbsp;mint. You can't choose to mint one. The bug chooses&nbsp;you.</span>
     </div>
   </div>
 </section>
@@ -607,37 +688,43 @@
     <div class="statement">
       <div class="statement-num">01 — Mechanic</div>
       <div class="statement-text">Every donation places one pixel, one layer deep.</div>
-      <div class="statement-sub">A 24×24 canvas — same dimensions as a CryptoPunk. Each cell has <strong>10 layers</strong>. Your blockhash decides the cell. First patron to land on a cell = palest shade. Tenth patron = full V1 lavender. <strong>5,760 mints = exactly 10 layers per cell on average = a saturated portrait.</strong></div>
+      <div class="statement-sub">A 24×24 canvas — same dimensions as a CryptoPunk. Each cell has <strong>10 layers</strong>. Your blockhash decides the cell. First patron to land on a cell = palest shade. Tenth patron = full V1 lavender. <strong>5,760 mints = exactly 10 layers per cell on average = a saturated&nbsp;portrait.</strong></div>
     </div>
 
     <div class="statement">
-      <div class="statement-num">02 — Hold then sweep</div>
-      <div class="statement-text">Nothing is bought until 33 ETH is reached.</div>
-      <div class="statement-sub">All donations are held by the smart contract — locked, untouchable, no human in the loop. When the pool reaches 33 ETH (current V2 floor), the contract begins sweeping V1 CryptoPunks from the floor, one by one, until the pool is spent. <strong>How many V1s we end up with depends on what the V1 market lets us steal.</strong></div>
+      <div class="statement-num">02 — Continuous sweep</div>
+      <div class="statement-text">The contract buys V1s as soon as it can afford them.</div>
+      <div class="statement-sub">No big-bang event, no human deciding the moment. Every time the pool accumulates enough ETH for the current V1 floor (currently around 4 ETH), the contract automatically buys one V1 from the lowest listing. <strong>Then it keeps going.</strong> All the way up to 33 ETH total raised — the V2&nbsp;floor. Each swept punk lands on the gallery&nbsp;above.</div>
     </div>
 
     <div class="statement">
       <div class="statement-num">03 — Price</div>
       <div class="statement-text">33 ETH ÷ 5,760 = <span class="lav-text">0.00573 ETH</span> per mint.</div>
-      <div class="statement-sub">Roughly $11 USD. Fixed at deploy — no bonding curve, no early-bird discount, no whales-only tier. Everyone pays the same. High enough that 5,760 patrons gets us to V2 floor money. Low enough for anyone with a wallet.</div>
+      <div class="statement-sub">Roughly $11 USD. Fixed at deploy — no bonding curve, no early-bird discount, no whales-only tier. Everyone pays the same. High enough that 5,760 patrons gets us to V2 floor money. Low enough for anyone with a&nbsp;wallet.</div>
     </div>
 
     <div class="statement">
-      <div class="statement-num">04 — Your NFT</div>
+      <div class="statement-num">04 — The Aliens</div>
+      <div class="statement-text"><span class="bug-square"></span> pixels are rare. 9 in 5,760.</div>
+      <div class="statement-sub">Each mint has a 1-in-640 chance of becoming an Alien — rendered in <strong>cyan</strong>, the same shade as the background of the <strong>9 Alien CryptoPunks</strong> in the original collection. ~9 will exist at full mint. Aliens are tagged in the patron ticker as <code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;">[ALIEN]</code>. You can't mint one on purpose. The bug chooses&nbsp;you.</div>
+    </div>
+
+    <div class="statement">
+      <div class="statement-num">05 — Your NFT</div>
       <div class="statement-text">Your token is the canvas at the block you minted.</div>
-      <div class="statement-sub">A snapshot. With your pixel marked. Patron #1's piece shows a near-empty canvas. Patron #5,760's piece shows the finished portrait. <strong>5,760 unique moments of the same artwork's becoming.</strong> All on-chain SVG — no IPFS, no external dependency. The token also stores your @handle and whether you got a Bug.</div>
+      <div class="statement-sub">A snapshot. With your pixel marked. Patron #1's piece shows a near-empty canvas. Patron #5,760's piece shows the finished portrait. <strong>5,760 unique moments of the same artwork's becoming.</strong> All on-chain SVG — no IPFS, no external dependency. The token also stores your @handle and whether you got an&nbsp;Alien.</div>
     </div>
 
     <div class="statement">
-      <div class="statement-num">05 — Refunds</div>
+      <div class="statement-num">06 — Refunds</div>
       <div class="statement-text">If we don't reach 33 ETH in 90 days, take your ETH back.</div>
-      <div class="statement-sub">Refunds are trustless and permissionless. Call <code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;">refund()</code>. Your ETH returns. <strong>Your pixel stays on the canvas.</strong> Locked. Permanent. A record of the attempt.</div>
+      <div class="statement-sub">Refunds are trustless and permissionless. Call <code style="font-family:'JetBrains Mono',monospace;font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;">refund()</code>. Your ETH returns. <strong>Your pixel stays on the canvas.</strong> Locked. Permanent. A record of the attempt. (Note: only the un-spent portion of the pool is refundable. ETH already used to sweep V1s belongs to the collective&nbsp;treasury.)</div>
     </div>
   </section>
 
   <footer>
     <div class="left">
-      <span>BMAOP</span><span>·</span><span>2026</span>
+      <span>HMSOP</span><span>·</span><span>2026</span>
     </div>
     <div class="right">
       <a href="#" id="contract-link">Contract</a>
@@ -657,19 +744,16 @@
       <p class="modal-body">
         Add your @handle so we can show you in the live ticker. Then connect your wallet to mint.
       </p>
-
       <div class="modal-field">
         <label class="modal-label" for="handle-input">Your X / Twitter handle (optional)</label>
         <input class="modal-input" id="handle-input" type="text" placeholder="@yourhandle" autocomplete="off" />
       </div>
-
       <div class="modal-summary">
         <div class="row"><span>Mint price</span><span class="lav">0.00573 ETH</span></div>
         <div class="row"><span>Approx USD</span><span>~$11</span></div>
         <div class="row"><span>Network</span><span>Ethereum mainnet</span></div>
-        <div class="row divider"><span>Bug chance</span><span>1 / 576 (~0.17%)</span></div>
+        <div class="row divider"><span>Alien chance</span><span>1 / 640 (~0.16%)</span></div>
       </div>
-
       <button class="modal-btn lav" id="connect-btn">Connect wallet</button>
       <p class="modal-fine">
         Your handle is stored on-chain with your mint. It's used to populate the live ticker. Handles are unverified — you can leave it blank or use any string.
@@ -687,7 +771,7 @@
         <div class="row divider"><span>Status</span><span id="confirm-status">Waiting for wallet…</span></div>
       </div>
       <p class="modal-fine">
-        Once the transaction is mined, your pixel is placed and your NFT mints automatically. If you get the Bug — congratulations. The chance was 1 in 576.
+        Once the transaction is mined, your pixel is placed and your NFT mints automatically. If you get an Alien — congratulations. The chance was 1 in 640.
       </p>
     </div>
   </div>
@@ -700,13 +784,13 @@
 const GRID = 24;
 const TOTAL = GRID * GRID;
 const LAYERS = 10;
-const MAX_MINTS = TOTAL * LAYERS;
+const MAX_MINTS = TOTAL * LAYERS;          // 5760
 const V2_FLOOR = 33;
 const MINT_PRICE = V2_FLOOR / MAX_MINTS;
-const BUG_PROB_DENOM = 576;
+const ALIEN_PROB_DENOM = 640;              // 1-in-640 → expected ~9 aliens at full mint
 const BG_HEX = { r: 0xfb, g: 0xfa, b: 0xf7 };
 const V1_HEX = { r: 0xa6, g: 0x9a, b: 0xfe };
-const BUG_COLOR = '#0a0a0a';
+const ALIEN_COLOR = '#c7fafb';             // V1 alien punks background
 
 // =================================================================
 // PALETTE
@@ -737,15 +821,16 @@ function mulberry32(seed) {
 }
 
 // =================================================================
-// CANVAS BUILDER
-// Returns the *sequence* of mint events so we can animate them in order
+// PRE-COMPUTE THE FULL MINT SEQUENCE
+// We compute the complete journey from 0 to 5,760 once at load.
+// The hero animation just shows a slice of this sequence at any moment.
 // =================================================================
-function buildMintSequence(numMints, seed = 42) {
+function precomputeSequence(seed = 42) {
   const counts = new Array(TOTAL).fill(0);
-  const sequence = []; // each entry: { cellIdx, layer, isBug }
+  const sequence = []; // each entry: { cellIdx, layer, isAlien }
   const rng = mulberry32(seed);
-  for (let i = 0; i < numMints; i++) {
-    const isBug = rng() < (1 / BUG_PROB_DENOM);
+  for (let i = 0; i < MAX_MINTS; i++) {
+    const isAlien = rng() < (1 / ALIEN_PROB_DENOM);
     let idx = Math.floor(rng() * TOTAL);
     let attempts = 0;
     while (counts[idx] >= LAYERS && attempts < TOTAL) {
@@ -754,37 +839,39 @@ function buildMintSequence(numMints, seed = 42) {
     }
     if (counts[idx] < LAYERS) {
       counts[idx]++;
-      sequence.push({ cellIdx: idx, layer: counts[idx], isBug });
+      sequence.push({ cellIdx: idx, layer: counts[idx], isAlien });
     }
   }
-  return { sequence, counts };
+  return sequence;
 }
 
-// Build a final-state {counts, bugs} from a sequence
-function finalize(sequence) {
+// Build a fast lookup of "for the first N mints, what's each cell's
+// final layer count + alien status?" We use this to render any slice
+// of the sequence in O(TOTAL) time without re-walking the sequence.
+function buildStateAt(sequence, n) {
   const counts = new Array(TOTAL).fill(0);
-  const bugs = new Set();
-  for (const m of sequence) {
+  const aliens = new Array(TOTAL).fill(false);
+  for (let i = 0; i < n; i++) {
+    const m = sequence[i];
     counts[m.cellIdx] = m.layer;
-    if (m.isBug) bugs.add(m.cellIdx);
+    if (m.isAlien) aliens[m.cellIdx] = true;
   }
-  return { counts, bugs };
+  return { counts, aliens };
 }
 
 // =================================================================
-// RENDERERS
+// RENDER
 // =================================================================
 const CELL = 240 / GRID;
 
-// Static render for the side stages
-function renderStatic({ counts, bugs }) {
+function renderState({ counts, aliens }) {
   let svg = '';
   for (let i = 0; i < TOTAL; i++) {
     if (counts[i] === 0) continue;
     const x = (i % GRID) * CELL;
     const y = Math.floor(i / GRID) * CELL;
-    if (bugs.has(i)) {
-      svg += `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${BUG_COLOR}"/>`;
+    if (aliens[i]) {
+      svg += `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${ALIEN_COLOR}"/>`;
     } else {
       svg += `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${SHADES[counts[i] - 1]}"/>`;
     }
@@ -792,201 +879,172 @@ function renderStatic({ counts, bugs }) {
   return svg;
 }
 
-// Add the corner-tick highlight on a specific cell
-function corners(cellIdx) {
-  const x = (cellIdx % GRID) * CELL;
-  const y = Math.floor(cellIdx / GRID) * CELL;
-  const len = CELL * 0.4;
-  const gap = 1.5;
-  return `<g stroke="${BUG_COLOR}" stroke-width="0.6" fill="none">
-    <path d="M ${x - gap - len} ${y - gap} L ${x - gap} ${y - gap} L ${x - gap} ${y - gap - len}"/>
-    <path d="M ${x + CELL + gap + len} ${y - gap} L ${x + CELL + gap} ${y - gap} L ${x + CELL + gap} ${y - gap - len}"/>
-    <path d="M ${x - gap - len} ${y + CELL + gap} L ${x - gap} ${y + CELL + gap} L ${x - gap} ${y + CELL + gap + len}"/>
-    <path d="M ${x + CELL + gap + len} ${y + CELL + gap} L ${x + CELL + gap} ${y + CELL + gap} L ${x + CELL + gap} ${y + CELL + gap + len}"/>
-  </g>`;
+// =================================================================
+// HERO LOOP: 0 → 5760 → 0 → 5760 ...
+//
+// One full cycle = ~50s. We use eased timing so growth feels
+// organic — slower at start (when each pixel is meaningful), faster
+// in the middle (when the canvas is filling), slow again at the top
+// (when only a few cells remain to fully saturate).
+// =================================================================
+const HERO_SEQ = precomputeSequence(42);
+const heroSvg = document.getElementById('hero-canvas');
+
+const CYCLE_MS = 50000;  // full ascend cycle
+const HOLD_FULL_MS = 1800;  // pause at saturation
+const HOLD_EMPTY_MS = 800;  // pause at empty
+const PERIOD_MS = (CYCLE_MS + HOLD_FULL_MS) * 2 + HOLD_EMPTY_MS;
+
+// Phase functions: given t in [0,1], return number of mints to show
+function easeInOut(t) {
+  // Smoothstep variant — slower at extremes, faster in middle
+  return t * t * (3 - 2 * t);
 }
 
-// =================================================================
-// HERO: animated build-in then live trickle
-// =================================================================
-const DEMO_MINTS = 847;
-const { sequence: heroSeq } = buildMintSequence(DEMO_MINTS, 42);
-const heroFinal = finalize(heroSeq);
+let lastRenderedN = -1;
+function tick() {
+  const tMod = (performance.now() % PERIOD_MS) / PERIOD_MS;
+  // Schedule:
+  //   [0 .. CYCLE_MS / PERIOD_MS]                  → ascend 0→1
+  //   [.. + HOLD_FULL_MS / PERIOD_MS]              → hold full
+  //   [.. + CYCLE_MS / PERIOD_MS]                  → descend 1→0
+  //   [.. + HOLD_EMPTY_MS / PERIOD_MS]             → hold empty
+  const ascendEnd = CYCLE_MS / PERIOD_MS;
+  const holdFullEnd = ascendEnd + HOLD_FULL_MS / PERIOD_MS;
+  const descendEnd = holdFullEnd + CYCLE_MS / PERIOD_MS;
 
-// Build the SVG with all rects, each tagged with a stagger delay
-function buildAnimatedHero(sequence, highlightIdx = -1) {
-  // For each cell that's filled, find the LAST mint that updated it
-  // — that determines its visual shade. Order rects by mint timestamp
-  // so the staggered animation matches the mint chronology.
-  const lastUpdate = new Map(); // cellIdx -> { layer, isBug, mintIdx }
-  sequence.forEach((m, i) => {
-    lastUpdate.set(m.cellIdx, { layer: m.layer, isBug: m.isBug, mintIdx: i });
-  });
-
-  // We want pixels to appear in the order they were minted. To prevent
-  // the build-in animation from taking forever for 847 mints, we use a
-  // logarithmic time curve so most rects animate in the first ~1.8s.
-  const total = sequence.length;
-  const buildDuration = 1800; // ms
-  const totalAnimRange = buildDuration / 1000; // s
-
-  let svg = '';
-  // Iterate in mint order to apply stagger delays
-  const seenCell = new Map();
-  for (let i = 0; i < total; i++) {
-    const m = sequence[i];
-    // We only render the FINAL state of each cell, so skip earlier visits
-    if (seenCell.has(m.cellIdx)) continue;
-    const final = lastUpdate.get(m.cellIdx);
-    seenCell.set(m.cellIdx, true);
-
-    const x = (m.cellIdx % GRID) * CELL;
-    const y = Math.floor(m.cellIdx / GRID) * CELL;
-    const color = final.isBug ? BUG_COLOR : SHADES[final.layer - 1];
-
-    // Stagger: ease the delay so most mints land in the first half
-    const t = i / total;
-    const eased = 1 - Math.pow(1 - t, 2);
-    const delay = (eased * totalAnimRange).toFixed(3);
-
-    svg += `<rect class="pixel-anim" x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${color}" style="animation-delay: ${delay}s"/>`;
+  let progress;  // 0..1 where 1 = fully filled
+  if (tMod < ascendEnd) {
+    progress = easeInOut(tMod / ascendEnd);
+  } else if (tMod < holdFullEnd) {
+    progress = 1;
+  } else if (tMod < descendEnd) {
+    progress = easeInOut(1 - (tMod - holdFullEnd) / (descendEnd - holdFullEnd));
+  } else {
+    progress = 0;
   }
 
-  if (highlightIdx >= 0) {
-    svg += corners(highlightIdx);
+  // Quantize to avoid hammering DOM with identical renders
+  const n = Math.round(progress * MAX_MINTS);
+  if (n !== lastRenderedN) {
+    lastRenderedN = n;
+    heroSvg.innerHTML = renderState(buildStateAt(HERO_SEQ, n));
   }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+// =================================================================
+// STAGES (static — these stay fixed as scroll-explainers)
+// =================================================================
+document.getElementById('stage-1').innerHTML = renderState(buildStateAt(HERO_SEQ, 200));
+document.getElementById('stage-2').innerHTML = renderState(buildStateAt(HERO_SEQ, 2500));
+document.getElementById('stage-3').innerHTML = renderState(buildStateAt(HERO_SEQ, 5760));
+
+// =================================================================
+// CURRENT REAL STATE (demo — wired up via contract reads in production)
+// =================================================================
+const REAL_MINTS = 847;
+const REAL_ALIENS = 1;  // expected ~1 at 847 mints with 1/640 probability
+const REAL_V1S_SWEPT = 1;
+
+const realRaised = (REAL_MINTS * MINT_PRICE).toFixed(3);
+document.getElementById('raised').textContent = realRaised;
+document.getElementById('patrons').textContent = REAL_MINTS.toLocaleString();
+document.getElementById('v1s-swept').textContent = REAL_V1S_SWEPT;
+document.getElementById('alien-count').textContent = REAL_ALIENS;
+
+const realPct = (realRaised / V2_FLOOR) * 100;
+document.getElementById('progress-pct').textContent = realPct.toFixed(1) + '%';
+setTimeout(() => {
+  document.getElementById('progress-fill').style.width = realPct + '%';
+}, 800);
+
+// =================================================================
+// SWEPT GALLERY
+// In production: populated from V1Acquired events on the contract.
+// Each entry needs: V1 ID, price paid, timestamp.
+// Real V1 punk art renders from V1 wrapper metadata.
+// For this static landing, we show one example sweep + placeholders.
+// =================================================================
+const SWEPT_V1S = [
+  // Example: first V1 swept
+  { id: 2891, priceEth: 4.18, timestamp: '2d ago' },
+];
+const SWEPT_TARGET_DISPLAY = 8;  // visual placeholder count
+
+function renderSweptGallery() {
+  const grid = document.getElementById('swept-grid');
+  let html = '';
+
+  // Real swept V1s
+  for (const v of SWEPT_V1S) {
+    // Tiny abstract pixel-portrait placeholder (the real art renders
+    // from V1 wrapper metadata in production). We seed it from the
+    // V1 ID so it's stable per punk.
+    const portrait = generatePortrait(v.id);
+    html += `
+      <div class="punk-card">
+        ${portrait}
+        <div class="punk-meta">
+          <span class="id">V1 #${v.id}</span>
+          <span class="price">${v.priceEth} ETH</span>
+        </div>
+      </div>`;
+  }
+
+  // Placeholder slots showing the future
+  const placeholders = Math.max(0, SWEPT_TARGET_DISPLAY - SWEPT_V1S.length);
+  for (let i = 0; i < placeholders; i++) {
+    html += `
+      <div class="punk-card placeholder">
+        <div class="punk-meta">
+          <span class="id">PENDING</span>
+          <span class="price">—</span>
+        </div>
+      </div>`;
+  }
+
+  grid.innerHTML = html;
+  document.getElementById('swept-num').textContent = SWEPT_V1S.length;
+}
+
+// Generate a stylised pixel-portrait (placeholder until real V1 art lands)
+function generatePortrait(seed) {
+  const rng = mulberry32(seed * 31337);
+  // 8x8 head silhouette in V1 style (dark on lavender)
+  const size = 8;
+  let svg = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">`;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      // Make a roughly head-shaped silhouette
+      const cx = size / 2, cy = size / 2 + 0.5;
+      const dx = x - cx + 0.5, dy = y - cy + 0.5;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const isHead = dist < size * 0.42;
+      if (!isHead) continue;
+      const r = rng();
+      // Eyes row
+      if (y === 3 && (x === 2 || x === 5)) {
+        svg += `<rect x="${x}" y="${y}" width="1" height="1" fill="#0a0a0a"/>`;
+      }
+      // Mouth
+      else if (y === 5 && x >= 3 && x <= 4) {
+        svg += `<rect x="${x}" y="${y}" width="1" height="1" fill="#0a0a0a"/>`;
+      }
+      // Hair / accessory variation
+      else if (y < 2 && r > 0.4) {
+        svg += `<rect x="${x}" y="${y}" width="1" height="1" fill="#0a0a0a"/>`;
+      }
+      else if (r > 0.7) {
+        svg += `<rect x="${x}" y="${y}" width="1" height="1" fill="rgba(10,10,10,0.5)"/>`;
+      }
+    }
+  }
+  svg += '</svg>';
   return svg;
 }
-
-// Initial render with build-in animation
-let highlightIdx = -1;
-for (let i = TOTAL - 1; i >= 0; i--) {
-  if (heroFinal.counts[i] > 0) { highlightIdx = i; break; }
-}
-const hero = document.getElementById('hero-canvas');
-hero.innerHTML = buildAnimatedHero(heroSeq, highlightIdx);
-
-// After build-in completes, swap to static render (no anim class) so
-// further updates can animate just the new pixel
-setTimeout(() => {
-  hero.innerHTML = renderStatic(heroFinal) + corners(highlightIdx);
-}, 2400);
-
-// =================================================================
-// LIVE TRICKLE: simulate new mints arriving every 8-20s
-// =================================================================
-let liveCounts = [...heroFinal.counts];
-let liveBugs = new Set(heroFinal.bugs);
-let liveMintCount = DEMO_MINTS;
-let lastMintAt = Date.now();
-
-function placeNewPixel() {
-  // Pick a random non-full cell
-  const available = [];
-  for (let i = 0; i < TOTAL; i++) if (liveCounts[i] < LAYERS) available.push(i);
-  if (available.length === 0) return;
-  const cellIdx = available[Math.floor(Math.random() * available.length)];
-  liveCounts[cellIdx]++;
-  liveMintCount++;
-  const isBug = Math.random() < (1 / BUG_PROB_DENOM);
-  if (isBug) liveBugs.add(cellIdx);
-
-  // Highlight that new pixel for ~3s
-  highlightIdx = cellIdx;
-  const finalState = { counts: liveCounts, bugs: liveBugs };
-
-  // Render with the new pixel marked as .pixel-new for a quick pop animation
-  let svg = '';
-  for (let i = 0; i < TOTAL; i++) {
-    if (liveCounts[i] === 0) continue;
-    const x = (i % GRID) * CELL;
-    const y = Math.floor(i / GRID) * CELL;
-    const color = liveBugs.has(i) ? BUG_COLOR : SHADES[liveCounts[i] - 1];
-    const cls = i === cellIdx ? 'pixel-new' : '';
-    svg += `<rect class="${cls}" x="${x}" y="${y}" width="${CELL}" height="${CELL}" fill="${color}"/>`;
-  }
-  svg += corners(highlightIdx);
-  hero.innerHTML = svg;
-
-  // Update stats
-  document.getElementById('hero-fill').textContent = liveMintCount + ' placed';
-  document.getElementById('hero-bugs').textContent = liveBugs.size + (liveBugs.size === 1 ? ' bug' : ' bugs');
-  const patronsEl = document.getElementById('patrons');
-  patronsEl.textContent = liveMintCount.toLocaleString();
-  patronsEl.classList.remove('flash');
-  void patronsEl.offsetWidth; // restart animation
-  patronsEl.classList.add('flash');
-
-  document.getElementById('bug-count').textContent = liveBugs.size;
-  if (isBug) {
-    const bugStat = document.getElementById('bugs-stat');
-    bugStat.classList.remove('flash');
-    void bugStat.offsetWidth;
-    bugStat.classList.add('flash');
-  }
-
-  const newRaised = (liveMintCount * MINT_PRICE).toFixed(3);
-  const raisedEl = document.getElementById('raised');
-  raisedEl.textContent = newRaised;
-  raisedEl.classList.remove('flash');
-  void raisedEl.offsetWidth;
-  raisedEl.classList.add('flash');
-
-  const newPct = (newRaised / V2_FLOOR) * 100;
-  document.getElementById('progress-pct').textContent = newPct.toFixed(1) + '%';
-  document.getElementById('progress-fill').style.width = newPct + '%';
-
-  // Update FOMO timer
-  lastMintAt = Date.now();
-  updateFomoTime();
-}
-
-function updateFomoTime() {
-  const sec = Math.floor((Date.now() - lastMintAt) / 1000);
-  let label;
-  if (sec < 60) label = `${sec} second${sec === 1 ? '' : 's'} ago`;
-  else if (sec < 3600) label = `${Math.floor(sec/60)} minute${Math.floor(sec/60) === 1 ? '' : 's'} ago`;
-  else label = `${Math.floor(sec/3600)} hour${Math.floor(sec/3600) === 1 ? '' : 's'} ago`;
-  document.getElementById('last-mint-time').textContent = label;
-}
-
-// Start the live trickle 4s after build-in completes
-setTimeout(() => {
-  setInterval(updateFomoTime, 1000);
-  // First arrival at random 6-15s, then 8-20s thereafter
-  function schedule() {
-    const delay = 8000 + Math.random() * 12000;
-    setTimeout(() => {
-      placeNewPixel();
-      schedule();
-    }, delay);
-  }
-  schedule();
-}, 3000);
-
-// =================================================================
-// STAGES (static, no animation needed)
-// =================================================================
-document.getElementById('stage-1').innerHTML = renderStatic(finalize(buildMintSequence(200, 7).sequence));
-document.getElementById('stage-2').innerHTML = renderStatic(finalize(buildMintSequence(2500, 7).sequence));
-document.getElementById('stage-3').innerHTML = renderStatic(finalize(buildMintSequence(5760, 7).sequence));
-
-// =================================================================
-// STATS INITIAL
-// =================================================================
-const raised = (DEMO_MINTS * MINT_PRICE).toFixed(3);
-document.getElementById('raised').textContent = raised;
-document.getElementById('patrons').textContent = DEMO_MINTS.toLocaleString();
-document.getElementById('price').textContent = MINT_PRICE.toFixed(5);
-document.getElementById('bug-count').textContent = heroFinal.bugs.size;
-document.getElementById('hero-fill').textContent = DEMO_MINTS + ' placed';
-document.getElementById('hero-bugs').textContent = heroFinal.bugs.size + (heroFinal.bugs.size === 1 ? ' bug' : ' bugs');
-
-const pct = (raised / V2_FLOOR) * 100;
-document.getElementById('progress-pct').textContent = pct.toFixed(1) + '%';
-setTimeout(() => {
-  document.getElementById('progress-fill').style.width = pct + '%';
-}, 800);
+renderSweptGallery();
 
 // =================================================================
 // TICKER
@@ -1002,14 +1060,14 @@ const DEMO_HANDLES = [
 function renderTicker() {
   const track = document.getElementById('ticker-track');
   const items = [];
-  const bugMints = new Set([843, 821]);
+  const alienMints = new Set([843]);  // 1 alien in demo state (~847 mints @ 1/640)
   const times = ['12s', '34s', '1m', '2m', '4m', '7m', '11m', '18m'];
   for (let i = 0; i < DEMO_HANDLES.length; i++) {
     const handle = DEMO_HANDLES[i % DEMO_HANDLES.length];
-    const num = DEMO_MINTS - i;
-    const bugTag = bugMints.has(num) ? '<span class="bug-tag">BUG</span>' : '';
+    const num = REAL_MINTS - i;
+    const alienTag = alienMints.has(num) ? '<span class="alien-tag">ALIEN</span>' : '';
     const time = i < times.length ? `<span class="time">${times[i]}</span>` : '';
-    items.push(`<span>${handle}<span class="pixel-num">#${num.toLocaleString()}</span>${bugTag}${time}</span>`);
+    items.push(`<span>${handle}<span class="pixel-num">#${num.toLocaleString()}</span>${alienTag}${time}</span>`);
   }
   track.innerHTML = items.join('') + items.join('');
 }
@@ -1048,9 +1106,10 @@ document.getElementById('connect-btn').addEventListener('click', () => {
 document.getElementById('refund-btn').addEventListener('click', (e) => {
   e.preventDefault();
   alert(
-    'Refunds: available if the pool doesn\'t reach 33 ETH in 90 days.\n\n' +
-    'Any patron can call refund() — no permission, no human in the loop. ETH returns directly.\n\n' +
-    'Your pixel stays on the canvas. Forever. Locked. The art outlives the economics.'
+    'Refunds: available if we don\'t reach 33 ETH in 90 days.\n\n' +
+    'Any patron can call refund() — no permission, no human in the loop.\n\n' +
+    'Note: only the un-spent portion of the pool is refundable. ETH already used to sweep V1s belongs to the collective treasury.\n\n' +
+    'Your pixel stays on the canvas. Forever.'
   );
 });
 </script>
